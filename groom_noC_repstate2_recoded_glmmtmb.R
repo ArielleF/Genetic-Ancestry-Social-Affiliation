@@ -31,3 +31,4 @@ glmmTMB(groom_two_month_perm ~ male_hybridscore + female_hybridscore + females_i
 
 
 write.table(permuted_results,file=paste0("GLMMTMB_permuted_results_groom2_noC_repstate_recoded",seed,".txt"),quote=F,col.names=F,row.names=F)
+q(save="no")
