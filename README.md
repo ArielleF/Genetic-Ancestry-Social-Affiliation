@@ -1,4 +1,4 @@
-![Amboseli baboons grooming](https://github.com/ArielleF/Genetic-Ancestry-Social-Affiliation/issues/1#issue-898365222)
+![Amboseli baboons grooming](https://user-images.githubusercontent.com/21341857/119188325-81060880-ba48-11eb-8edf-10ea915326a0.JPG)
 
 A male and female baboon in the Amboseli basin of southern Kenyna, maintaining close spatial proximity, an affiliative behavior important to establishing, maintaining, and strengthening social bonds in non-human primates.
 
