@@ -161,11 +161,11 @@ ggplot(tmp8, aes(x=female_hybridscore_new, y=male_hybridscore_new, fill=probs)) 
 ####################
 # Fig. 2 line graps surrounding heatmap
 ####################
-# Plot the probability of grooming behavior for yellow males as a function of the genetic ancestry of potential opposite-sex social partners (top left panel)
+# Plot the probability of grooming behavior for yellow males as a function of the genetic ancestry of potential opposite-sex social partners (left top panel)
 test <- subset(tmp8, male_hybridscore_new==0)
 ggplot(test) + geom_line(aes(female_hybridscore_new, probs), size=2) + theme_classic()+ theme(legend.position = "none", text=element_text(size=24), axis.text = element_text(color="black")) + scale_x_continuous(name="female genetic ancestry") + scale_y_continuous(limits=c(min(tmp8$probs), max(tmp8$probs)), name="grooming probability")
 #*****ARIELLE CHECK TO MAKE SURE THE MIN, MAX WORKS FOR THE LIMITS
-# Plot the probability of grooming behavior for anubis males as a function of the genetic ancestry of potential opposite-sex social partners (bototm left panel)
+# Plot the probability of grooming behavior for anubis males as a function of the genetic ancestry of potential opposite-sex social partners (left bottom panel)
 test <- subset(tmp8, male_hybridscore_new==1)
 ggplot(test) + geom_line(aes(female_hybridscore_new, probs), size=2) + theme_classic()+ theme(legend.position = "none", text=element_text(size=24), axis.text = element_text(color="black")) + scale_x_continuous(name="female genetic ancestry") + scale_y_continuous(limits=c(min(tmp8$probs), max(tmp8$probs)), name="grooming probability")
 #*****ARIELLE CHECK TO MAKE SURE THE MIN, MAX WORKS FOR THE LIMITS
@@ -185,8 +185,46 @@ ggplot(test) + geom_line(aes(male_hybridscore_new, probs), size=2) + theme_class
 ####################
 # Fig. 3 central heatmap
 ####################
+# Get the probability of grooming behavior as a function of female dominance rank and male dominance rank, based on model estimates assuming average values for all other covariates
+tmp9 <- data.frame(females_in_grp_avg=mean(groom_final_6$females_in_grp_avg), males_in_grp_avg=mean(groom_final_6$males_in_grp_avg), female_hybridscore_new=mean(groom_final_6$female_hybridscore_new), male_hybridscore_new=mean(groom_final_6$male_hybridscore_new),  gen_diversity_male=mean(groom_final_6$gen_diversity_male), gen_diversity_female=mean(groom_final_6$gen_diversity_female), QG_final=mean(groom_final_6$QG_final), observer_effort_two_months=mean(groom_final_6$observer_effort_two_months), female_age_avg_minus1=mean(groom_final_6$female_age_avg_minus1), female_age_transform_with_avg=mean(groom_final_6$female_age_transform_with_avg), reproductive_state_binary=1, assortative_max_new=mean(groom_final_6$assortative_max_new), sum_female_male_co_residency_count=mean(groom_final_6$sum_female_male_co_residency_count))
+
+# Get all the empirical range of female dominance rank and male dominance rank values
+f_rank <- as.vector(seq(min(groom_final_6$female_rank_avg),max(groom_final_6$female_rank_avg), by=1))
+m_rank <- as.vector(seq(min(groom_final_6$male_rank_avg),max(groom_final_6$male_rank_avg), by=1))
+
+# Get all pairwise combinations of female dominance rank and male dominance rank
+tmp10 <- expand.grid(f_rank, m_rank)
+colnames(tmp10) <- c("female_rank_avg", "male_rank_avg")
+
+tmp11 <- merge(tmp10, tmp9)
+tmp11$female_sname <- NA
+tmp11$male_sname <- NA
+
+# Get the grooming probability for female dominance rank and male dominance rank based on model estimates assuming average values for all other covariates
+tmp11$probs <- predict(tmp, tmp11, type="response", re.form=NA)
+
+# Plot figure 3 central heatmap
+ggplot(tmp11, aes(x=female_rank_avg, y=male_rank_avg, fill=probs)) + geom_raster() + theme_classic() + scale_fill_gradientn(colours=c("blue","cyan","green", "yellow","orange", "red", "indianred4")) + scale_x_continuous(name="female rank",  breaks=c(1,5,10,15,20,25,30)) + scale_y_continuous(name="male rank", breaks=c(1,5,10,15,20,25,30)) + theme(legend.position = "none", text=element_text(size=24), axis.text = element_text(color="black")) + guides(fill=guide_colorbar(ticks.colour = "black", ticks.linewidth = 1.5))
+
+# For just the color legend - replot but use size 16 for color bar ticks
+ggplot(tmp11, aes(x=female_rank_avg, y=male_rank_avg, fill=probs)) + geom_raster() + theme_classic() + scale_fill_gradientn(colours=c("blue","cyan","green", "yellow","orange", "red", "indianred4")) + scale_x_continuous(name="female rank",  breaks=c(1,5,10,15,20,25,30)) + scale_y_continuous(name="male rank", breaks=c(1,5,10,15,20,25,30)) + theme(legend.position = "right", text=element_text(size=16), axis.text = element_text(color="black")) + guides(fill=guide_colorbar(ticks.colour = "black", ticks.linewidth = 1.5))
+
 
 ####################
-# Fig. 4 line graps surrounding heatmap
+# Fig. 3 line graps surrounding heatmap
 ####################
+# Note: we represented rank using an ordinal approach, where the highest-ranking individual holds rank 1 and lower-ranking individuals occupy ranks of successively higher numbers
+# Plot the probability of grooming behavior for the lowest ranking males as a function of the dominance rank of potential opposite-sex social partners (left top panel)
+test <- subset(tmp11, max(male_rank_avg)==male_rank_avg) 
+ggplot(test) + geom_line(aes(female_rank_avg, probs), size=2) + theme_classic()+ theme(legend.position = "none", text=element_text(size=24), axis.text = element_text(color="black")) + scale_x_continuous(name="female rank", breaks=c(1,5,10,15,20,25,30)) + scale_y_continuous(limits=c(0.17, 0.34), name="grooming probability")
+# Plot the probability of grooming behavior for the highest ranking males as a function of the dominance rank of potential opposite-sex social partners (left bottom panel)
+test <- subset(tmp11, min(male_rank_avg)==male_rank_avg) 
+ggplot(test) + geom_line(aes(female_rank_avg, probs), size=2) + theme_classic()+ theme(legend.position = "none", text=element_text(size=24), axis.text = element_text(color="black")) + scale_x_continuous(name="female rank", breaks=c(1,5,10,15,20,25,30)) + scale_y_continuous(limits=c(0.17, 0.34), name="grooming probability")
+
+# Plot the probability of grooming behavior for the lowest ranking females as a function of the dominance rank of potential opposite-sex social partners (bottom left panel)
+test <- subset(tmp11, max(female_rank_avg)==female_rank_avg)
+ggplot(test) + geom_line(aes(male_rank_avg, probs), size=2) + theme_classic()+ theme(legend.position = "none", text=element_text(size=24), axis.text = element_text(color="black")) + scale_x_continuous(name="male rank", breaks=c(1,5,10,15,20,25,30)) + scale_y_continuous(limits=c(0.17, 0.34), name="grooming probability")
+# Plot the probability of grooming behavior for the highest ranking females as a function of the dominance rank of potential opposite-sex social partners (bottom right panel)
+test <- subset(tmp11, min(female_rank_avg)==female_rank_avg)
+ggplot(test) + geom_line(aes(male_rank_avg, probs), size=2) + theme_classic()+ theme(legend.position = "none", text=element_text(size=24), axis.text = element_text(color="black")) + scale_x_continuous(name="male rank", breaks=c(1,5,10,15,20,25,30)) + scale_y_continuous(limits=c(0.17, 0.34), name="grooming probability")
 
