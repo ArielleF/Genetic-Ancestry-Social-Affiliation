@@ -67,7 +67,7 @@ raw2 <- raw %>% group_by(male_rank_avg, count_groom) %>% mutate(yes_groom=sum(gr
 raw3 <- distinct(raw2, male_rank_avg, count_groom, yes_groom)
 raw3$groom_prox <- raw3$yes_groom/raw3$count_groom
 
-# Plot figure 1A
+# Plot figure 1B
 ggplot() + geom_line(data=tmp5, aes(male_rank_avg, probs), color="black", size=1, linetype="dashed") + geom_jitter(data=groom, aes(male_rank_avg, groom_two_month), alpha=0.05, height=0.05, color="grey70") + scale_x_continuous(name="male rank",breaks=c(1,5,10,15,20,25,30)) +  theme_classic() + theme(text=element_text(size=20), axis.text = element_text(color="black")) + geom_point(data=raw3, aes(male_rank_avg, groom_prox), size=3, color="turquoise4") + scale_y_continuous(name="grooming probability") 
 
 
@@ -94,6 +94,7 @@ nrow(belowmed_3)
 
 tmp2 <- rbind(abovemed_3, belowmed_3)
 
+# Plot figure 1C
 ggplot(data=tmp2) + geom_violin(aes(x = set, y = prop_behav, color=set, fill=set),  alpha = 0.4) + geom_jitter(aes(x = set, y = prop_behav, color=set, size=5)) + geom_boxplot(aes(x = set, y = prop_behav), size=1.25, color="black", width=0.1, fill="white", outlier.colour = NA) + scale_y_continuous(name="grooming probability") + scale_x_discrete(labels=c("above_90"= "most anubis-like", "below_10" = "most yellow-like")) + theme_classic() + theme(legend.position = "none", legend.title = element_blank(), axis.title.x = element_blank(),text=element_text(size=28), axis.text = element_text(color="black")) + scale_color_manual(values = c("above_90" = "royalblue3", "below_10" = "royalblue3")) + scale_fill_manual(values = c("above_90" = "royalblue3", "below_10" = "royalblue3"))
 
 
@@ -119,7 +120,7 @@ raw2 <- raw %>% group_by(female_rank_avg, count_groom) %>% mutate(yes_groom=sum(
 raw3 <- distinct(raw2, female_rank_avg, count_groom, yes_groom)
 raw3$groom_prox <- raw3$yes_groom/raw3$count_groom
 
-# Plot figure 1A
+# Plot figure 1D
 ggplot() + geom_jitter(data=groom, aes(female_rank_avg, groom_two_month), alpha=0.05, height=0.05, color="grey70") + scale_x_continuous(name="female rank",breaks=c(1,5,10,15,20,25,30)) +  theme_classic() + theme(text=element_text(size=20), axis.text = element_text(color="black")) + geom_point(data=raw3, aes(female_rank_avg, groom_prox), size=3, colour="royalblue3") + scale_y_continuous(name="grooming probability") + geom_line(data=tmp5, aes(female_rank_avg, probs), color="black", size=1, linetype="dashed") 
 
 
@@ -130,10 +131,52 @@ ggplot() + geom_jitter(data=groom, aes(female_rank_avg, groom_two_month), alpha=
 ####################
 # Fig. 2 central heatmap
 ####################
+# Get the probability of grooming behavior as a function of female genetic ancestry and male genetic ancestry, based on model estimates assuming average values for all other covariates
+tmp5 <- data.frame(females_in_grp_avg=mean(groom_final_6$females_in_grp_avg), males_in_grp_avg=mean(groom_final_6$males_in_grp_avg), female_rank_avg=mean(groom_final_6$female_rank_avg), male_rank_avg=mean(groom_final_6$male_rank_avg),  gen_diversity_male=mean(groom_final_6$gen_diversity_male), gen_diversity_female=mean(groom_final_6$gen_diversity_female), QG_final=mean(groom_final_6$QG_final), observer_effort_two_months=mean(groom_final_6$observer_effort_two_months), female_age_avg_minus1=mean(groom_final_6$female_age_avg_minus1), female_age_transform_with_avg=mean(groom_final_6$female_age_transform_with_avg), reproductive_state_binary=1, sum_female_male_co_residency_count=mean(groom_final_6$sum_female_male_co_residency_count))
+
+# Get all possible female genetic ancestry and male genetic ancestry values (these values can range continuously from 0 to 1 where where 0 corresponds to unadmixed yellow baboon ancestry and 1 corresponds to unadmixed anubis baboon ancestry)
+f_genetic <- as.vector(seq(0,1, by=0.001))
+m_genetic <- as.vector(seq(0,1, by=0.001))
+# Get all pairwise combinations of female genetic ancestry and male genetic ancestry
+tmp7 <- expand.grid(f_genetic, m_genetic)
+colnames(tmp7) <- c("male_hybridscore_new", "female_hybridscore_new")
+# Recalculate the assortative genetic ancestry index for all of these combinations
+tmp7$assortative_1 <- (tmp7$male_hybridscore_new*tmp7$female_hybridscore_new)
+tmp7$assortative_2 <- ((1-tmp7$male_hybridscore_new)*(1-tmp7$female_hybridscore_new))
+tmp7$assortative_max_new <- apply(tmp7[, 3:4], 1, max)
+
+tmp8 <- merge(tmp7, tmp5)
+tmp8$female_sname <- NA
+tmp8$male_sname <- NA
+
+# Get the grooming probability for female genetic ancestry and male genetic ancestry based on model estimates assuming average values for all other covariates
+tmp8$probs <- predict(tmp, tmp8, type="response", re.form=NA) 
+
+# Plot figure 2 central heatmap
+ggplot(tmp8, aes(x=female_hybridscore_new, y=male_hybridscore_new, fill=probs)) + geom_raster() + theme_classic() + scale_fill_gradientn(colours=c("blue","cyan","green", "yellow","orange", "red", "indianred4")) + scale_x_continuous(name="female genetic ancestry") + scale_y_continuous(name="male genetic ancestry") + theme(legend.position = "none", text=element_text(size=24), axis.text = element_text(color="black")) + guides(fill=guide_colorbar(ticks.colour = "black", ticks.linewidth = 1.5))
+
+# For just the color legend - replot but use size 16 for color bar ticks
+ggplot(tmp8, aes(x=female_hybridscore_new, y=male_hybridscore_new, fill=probs)) + geom_raster() + theme_classic() + scale_fill_gradientn(colours=c("blue","cyan","green", "yellow","orange", "red", "indianred4")) + scale_x_continuous(name="female genetic ancestry") + scale_y_continuous(name="male genetic ancestry") + theme(legend.position = "right", text=element_text(size=16), axis.text = element_text(color="black")) + guides(fill=guide_colorbar(ticks.colour = "black", ticks.linewidth = 1.5))
 
 ####################
 # Fig. 2 line graps surrounding heatmap
 ####################
+# Plot the probability of grooming behavior for yellow males as a function of the genetic ancestry of potential opposite-sex social partners (top left panel)
+test <- subset(tmp8, male_hybridscore_new==0)
+ggplot(test) + geom_line(aes(female_hybridscore_new, probs), size=2) + theme_classic()+ theme(legend.position = "none", text=element_text(size=24), axis.text = element_text(color="black")) + scale_x_continuous(name="female genetic ancestry") + scale_y_continuous(limits=c(min(tmp8$probs), max(tmp8$probs)), name="grooming probability")
+#*****ARIELLE CHECK TO MAKE SURE THE MIN, MAX WORKS FOR THE LIMITS
+# Plot the probability of grooming behavior for anubis males as a function of the genetic ancestry of potential opposite-sex social partners (bototm left panel)
+test <- subset(tmp8, male_hybridscore_new==1)
+ggplot(test) + geom_line(aes(female_hybridscore_new, probs), size=2) + theme_classic()+ theme(legend.position = "none", text=element_text(size=24), axis.text = element_text(color="black")) + scale_x_continuous(name="female genetic ancestry") + scale_y_continuous(limits=c(min(tmp8$probs), max(tmp8$probs)), name="grooming probability")
+#*****ARIELLE CHECK TO MAKE SURE THE MIN, MAX WORKS FOR THE LIMITS
+
+# Plot the probability of grooming behavior for yellow females as a function of the genetic ancestry of potential opposite-sex social partners (bottom left panel)
+test <- subset(tmp8, female_hybridscore_new==1)
+ggplot(test) + geom_line(aes(male_hybridscore_new, probs), size=2) + theme_classic()+ theme(legend.position = "none", text=element_text(size=24), axis.text = element_text(color="black")) + scale_x_continuous(name="male genetic ancestry") + scale_y_continuous(limits=c(min(tmp8$probs), max(tmp8$probs), name="grooming probability")
+# Plot the probability of grooming behavior for anubis females as a function of the genetic ancestry of potential opposite-sex social partners (bottom right panel)
+test <- subset(tmp8, female_hybridscore_new==0)
+ggplot(test) + geom_line(aes(male_hybridscore_new, probs), size=2) + theme_classic()+ theme(legend.position = "none", text=element_text(size=24), axis.text = element_text(color="black")) + scale_x_continuous(name="male genetic ancestry") + scale_y_continuous(limits=c(min(tmp8$probs), max(tmp8$probs), name="grooming probability")
+
 
 #############################################################################################################################
 # Figure 3. Combined rank characteristics of females and males affect the probability of grooming.
