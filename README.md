@@ -13,4 +13,4 @@ Include simulation coding?
 
 For questions, please email Arielle Fogel at <afogel29@gmail.com>. Thank you for your interest in our work!
 
-Arielle S. Fogel, Emily M. McLean, Jacob B. Gordon, Elizabeth A. Archie, Jenny Tung*, Susan C. Alberts*
+Arielle S. Fogel, Emily M. McLean, Jacob B. Gordon, Elizabeth A. Archie, Jenny Tung, Susan C. Alberts
