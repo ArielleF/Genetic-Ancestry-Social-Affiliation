@@ -1,4 +1,4 @@
-#![Amboseli Baboons](/assets/images/philly-magic-gardens.jpg "Philadelphia's Magic Gardens")
+#![Amboseli baboon grooming](https://github.com/ArielleF/Genetic-Ancestry-Social-Affiliation/issues/1#issue-898365222)
 
 A male and female baboon in the Amboseli basin of southern Kenyna, maintaining close spatial proximity, an affiliative behavior important to establishing, maintaining, and strengthening social bonds in non-human primates.
 
