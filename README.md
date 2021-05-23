@@ -16,4 +16,5 @@ Include simulation coding?
 For script-related questions, please email Arielle Fogel at <afogel29@gmail.com>.
 
 Thank you for your interest in our work!
+
 Arielle S. Fogel, Emily M. McLean, Jacob B. Gordon, Elizabeth A. Archie, Jenny Tung, Susan C. Alberts
