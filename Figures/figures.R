@@ -1,9 +1,14 @@
 #!/usr/bin/env Rscript
 
-# Scripts for producing Figures 1-3 and S5-6
+# Scripts for producing Figures 1-3, S1, and S5-6
 # The scripts for Figures S2-S4, S5c-d, S6c-d are not included here as they are identical to the scripts for Figures 1-3, S5, S6 except the dataset (groom) is replaced by the proximity data set (also availble at XXX) and the model used for predictions is the proximity logistic regression model
+
 # Load the grooming data set available at XXX
 groom <- read.csv(, header=T) # for Figures S2-4, load the proximity data set instead
+
+# Load the data set for producing Figure S1 available at XXX
+# This data set is from the initial, monthly-based data set and contains all unique social group-month combinations
+s1 <- read.csv(, header=T)
 
 # Load R libraries
 library(ggplot2)
@@ -229,7 +234,13 @@ test <- subset(tmp11, min(female_rank_avg)==female_rank_avg)
 ggplot(test) + geom_line(aes(male_rank_avg, probs), size=2) + theme_classic()+ theme(legend.position = "none", text=element_text(size=24), axis.text = element_text(color="black")) + scale_x_continuous(name="male rank", breaks=c(1,5,10,15,20,25,30)) + scale_y_continuous(limits=c(0.17, 0.34), name="grooming probability")
 
 
-##***ARIELLE START ANNOTATION HERE
+#############################################################################################################################
+# Figure S1. The total effort invested in behavioral observations is consistent across study groups of different sizes.
+#############################################################################################################################
+# Plot figure S1
+ggplot(s1) + geom_point(alpha=0.5, size=2.5, aes(x=females_in_grp, y=female_point_samples_in_month, colour=grp)) + scale_x_continuous(name="adult females in social group") + scale_y_continuous(name="total adult female point samples\n per month per social group") + theme_classic() +  theme(axis.title=element_text(size=16), axis.text=element_text(size=16), legend.position = "none", text = element_text(color="black"))
+
+
 #############################################################################################################################
 # Figure S5. The number of adult males present in a social group influences grooming and proximity behavior.
 #############################################################################################################################
@@ -237,14 +248,15 @@ ggplot(test) + geom_line(aes(male_rank_avg, probs), size=2) + theme_classic()+ t
 ####################
 # Fig. S5A
 ####################
-abovemed_1 <- subset(groom, males_in_grp_avg>quantile(groom_final_6$males_in_grp_avg, 0.5))
+# Calculate the probability of grooming among co-resident opposite-sex pairs per two-month interval, for each male in social groups with greater or less than the median number of co-resident males in the sample without adjustment for other covariates
+abovemed_1 <- subset(groom, males_in_grp_avg>quantile(groom$males_in_grp_avg, 0.5))
 abovemed_1$set <- "above_median"
 abovemed_2 <- abovemed_1 %>% group_by(male_sname) %>% mutate(count_behav=dplyr::n()) 
 abovemed_3 <- abovemed_2 %>% group_by(male_sname, count_behav) %>% mutate(yes_behav=sum(groom_two_month))
 abovemed_3$prop_behav <- abovemed_3$yes_behav/abovemed_3$count_behav
 abovemed_3 <- abovemed_3[!duplicated(abovemed_3$male_sname),]
 
-belowmed_1 <- subset(groom, males_in_grp_avg<quantile(groom_final_6$males_in_grp_avg, 0.5))
+belowmed_1 <- subset(groom, males_in_grp_avg<quantile(groom$males_in_grp_avg, 0.5))
 belowmed_1$set <- "below_median"
 belowmed_2 <- belowmed_1 %>% group_by(male_sname) %>% mutate(count_behav=dplyr::n()) 
 belowmed_3 <- belowmed_2 %>% group_by(male_sname, count_behav) %>% mutate(yes_behav=sum(groom_two_month))
@@ -253,21 +265,22 @@ belowmed_3 <- belowmed_3[!duplicated(belowmed_3$male_sname),]
 
 tmp2 <- rbind(abovemed_3, belowmed_3)
 
+# Plot figure S5A
 ggplot(data=tmp2) + geom_jitter(aes(x = set, y = prop_behav, color=set, size=5), alpha=0.8) + geom_violin(aes(x = set, y = prop_behav, color=set, fill=set),  alpha = 0.4) + geom_boxplot(aes(x = set, y = prop_behav), size=1.25, color="black", width=0.1, fill="white", outlier.colour = NA) + scale_y_continuous(name="proportion of grooming occurrences\nout of all potential grooming opportunities")  + scale_x_discrete(labels=c("above_median"= "above median", "below_median" = "below median")) + theme_classic() + theme(legend.position = "none", legend.title = element_blank(), axis.title.x = element_blank(),text=element_text(size=30), axis.text = element_text(color="black")) + scale_color_manual(values = c("above_median" = "turquoise4", "below_median" = "turquoise4")) + scale_fill_manual(values = c("above_median" = "turquoise4", "below_median" = "turquoise4"))
 
 
 ####################
 # Fig. S5B
 ####################
-# grooming - female perspective
-abovemed_1 <- subset(groom, males_in_grp_avg>quantile(groom_final_6$males_in_grp_avg, 0.5))
+# Calculate the probability of grooming among co-resident opposite-sex pairs per two-month interval, for each female in social groups with greater or less than the median number of co-resident males in the sample without adjustment for other covariates
+abovemed_1 <- subset(groom, males_in_grp_avg>quantile(groom$males_in_grp_avg, 0.5))
 abovemed_1$set <- "above_median"
 abovemed_2 <- abovemed_1 %>% group_by(female_sname) %>% mutate(count_behav=dplyr::n()) 
 abovemed_3 <- abovemed_2 %>% group_by(female_sname, count_behav) %>% mutate(yes_behav=sum(groom_two_month))
 abovemed_3$prop_behav <- abovemed_3$yes_behav/abovemed_3$count_behav
 abovemed_3 <- abovemed_3[!duplicated(abovemed_3$female_sname),]
 
-belowmed_1 <- subset(groom, males_in_grp_avg<quantile(groom_final_6$males_in_grp_avg, 0.5))
+belowmed_1 <- subset(groom, males_in_grp_avg<quantile(groom$males_in_grp_avg, 0.5))
 belowmed_1$set <- "below_median"
 belowmed_2 <- belowmed_1 %>% group_by(female_sname) %>% mutate(count_behav=dplyr::n()) 
 belowmed_3 <- belowmed_2 %>% group_by(female_sname, count_behav) %>% mutate(yes_behav=sum(groom_two_month))
@@ -276,6 +289,7 @@ belowmed_3 <- belowmed_3[!duplicated(belowmed_3$female_sname),]
 
 tmp2 <- rbind(abovemed_3, belowmed_3)
 
+# Plot figure S5B
 ggplot(data=tmp2) + geom_jitter(aes(x = set, y = prop_behav, color=set, size=5), alpha=0.8) + geom_violin(aes(x = set, y = prop_behav, color=set, fill=set),  alpha = 0.4) + geom_boxplot(aes(x = set, y = prop_behav), size=1.25, color="black", width=0.1, fill="white", outlier.colour = NA) + scale_y_continuous(name="proportion of grooming occurrences\nout of all potential grooming opportunities")  + scale_x_discrete(labels=c("above_median"= "above median", "below_median" = "below median")) + theme_classic() + theme(legend.position = "none", legend.title = element_blank(), axis.title.x = element_blank(),text=element_text(size=30), axis.text = element_text(color="black")) + scale_color_manual(values = c("above_median" = "royalblue3", "below_median" = "royalblue3")) + scale_fill_manual(values = c("above_median" = "royalblue3", "below_median" = "royalblue3"))
 
 
@@ -286,14 +300,15 @@ ggplot(data=tmp2) + geom_jitter(aes(x = set, y = prop_behav, color=set, size=5),
 ####################
 # Fig. S6A
 ####################
-abovemed_1 <- subset(groom, females_in_grp_avg>quantile(groom_final_6$females_in_grp_avg, 0.5))
+# Calculate the probability of grooming among co-resident opposite-sex pairs per two-month interval, for each male in social groups with greater or less than the median number of co-resident females in the sample without adjustment for other covariates
+abovemed_1 <- subset(groom, females_in_grp_avg>quantile(groom$females_in_grp_avg, 0.5))
 abovemed_1$set <- "above_median"
 abovemed_2 <- abovemed_1 %>% group_by(male_sname) %>% mutate(count_behav=dplyr::n()) 
 abovemed_3 <- abovemed_2 %>% group_by(male_sname, count_behav) %>% mutate(yes_behav=sum(groom_two_month))
 abovemed_3$prop_behav <- abovemed_3$yes_behav/abovemed_3$count_behav
 abovemed_3 <- abovemed_3[!duplicated(abovemed_3$male_sname),]
 
-belowmed_1 <- subset(groom, females_in_grp_avg<quantile(groom_final_6$females_in_grp_avg, 0.5))
+belowmed_1 <- subset(groom, females_in_grp_avg<quantile(groom$females_in_grp_avg, 0.5))
 belowmed_1$set <- "below_median"
 belowmed_2 <- belowmed_1 %>% group_by(male_sname) %>% mutate(count_behav=dplyr::n()) 
 belowmed_3 <- belowmed_2 %>% group_by(male_sname, count_behav) %>% mutate(yes_behav=sum(groom_two_month))
@@ -302,20 +317,21 @@ belowmed_3 <- belowmed_3[!duplicated(belowmed_3$male_sname),]
 
 tmp2 <- rbind(abovemed_3, belowmed_3)
 
+# Plot figure S6A
 ggplot(data=tmp2) + geom_jitter(aes(x = set, y = prop_behav, color=set, size=5), alpha=0.8) + geom_violin(aes(x = set, y = prop_behav, color=set, fill=set),  alpha = 0.4) + geom_boxplot(aes(x = set, y = prop_behav), size=1.25, color="black", width=0.1, fill="white", outlier.colour = NA) + scale_y_continuous(name="proportion of grooming occurrences\nout of all potential grooming opportunities")  + scale_x_discrete(labels=c("above_median"= "above median", "below_median" = "below median")) + theme_classic() + theme(legend.position = "none", legend.title = element_blank(), axis.title.x = element_blank(),text=element_text(size=30), axis.text = element_text(color="black")) + scale_color_manual(values = c("above_median" = "turquoise4", "below_median" = "turquoise4")) + scale_fill_manual(values = c("above_median" = "turquoise4", "below_median" = "turquoise4"))
 
 ####################
 # Fig. S6B
 ####################
-# grooming - female perspective
-abovemed_1 <- subset(groom, females_in_grp_avg>quantile(groom_final_6$females_in_grp_avg, 0.5))
+# Calculate the probability of grooming among co-resident opposite-sex pairs per two-month interval, for each female in social groups with greater or less than the median number of co-resident females in the sample without adjustment for other covariates
+abovemed_1 <- subset(groom, females_in_grp_avg>quantile(groom$females_in_grp_avg, 0.5))
 abovemed_1$set <- "above_median"
 abovemed_2 <- abovemed_1 %>% group_by(female_sname) %>% mutate(count_behav=dplyr::n()) 
 abovemed_3 <- abovemed_2 %>% group_by(female_sname, count_behav) %>% mutate(yes_behav=sum(groom_two_month))
 abovemed_3$prop_behav <- abovemed_3$yes_behav/abovemed_3$count_behav
 abovemed_3 <- abovemed_3[!duplicated(abovemed_3$female_sname),]
 
-belowmed_1 <- subset(groom, females_in_grp_avg<quantile(groom_final_6$females_in_grp_avg, 0.5))
+belowmed_1 <- subset(groom, females_in_grp_avg<quantile(groom$females_in_grp_avg, 0.5))
 belowmed_1$set <- "below_median"
 belowmed_2 <- belowmed_1 %>% group_by(female_sname) %>% mutate(count_behav=dplyr::n()) 
 belowmed_3 <- belowmed_2 %>% group_by(female_sname, count_behav) %>% mutate(yes_behav=sum(groom_two_month))
@@ -324,5 +340,6 @@ belowmed_3 <- belowmed_3[!duplicated(belowmed_3$female_sname),]
 
 tmp2 <- rbind(abovemed_3, belowmed_3)
 
+# Plot figure S6B
 ggplot(data=tmp2) + geom_jitter(aes(x = set, y = prop_behav, color=set, size=5), alpha=0.8) + geom_violin(aes(x = set, y = prop_behav, color=set, fill=set),  alpha = 0.4) + geom_boxplot(aes(x = set, y = prop_behav), size=1.25, color="black", width=0.1, fill="white", outlier.colour = NA) + scale_y_continuous(name="proportion of grooming occurrences\nout of all potential grooming opportunities")  + scale_x_discrete(labels=c("above_median"= "above median", "below_median" = "below median")) + theme_classic() + theme(legend.position = "none", legend.title = element_blank(), axis.title.x = element_blank(),text=element_text(size=30), axis.text = element_text(color="black")) + scale_color_manual(values = c("above_median" = "royalblue3", "below_median" = "royalblue3")) + scale_fill_manual(values = c("above_median" = "royalblue3", "below_median" = "royalblue3"))
 
