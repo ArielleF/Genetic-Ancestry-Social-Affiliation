@@ -169,11 +169,9 @@ ggplot(tmp8, aes(x=female_hybridscore_new, y=male_hybridscore_new, fill=probs)) 
 # Plot the probability of grooming behavior for yellow males as a function of the genetic ancestry of potential opposite-sex social partners (left top panel)
 test <- subset(tmp8, male_hybridscore_new==0)
 ggplot(test) + geom_line(aes(female_hybridscore_new, probs), size=2) + theme_classic()+ theme(legend.position = "none", text=element_text(size=24), axis.text = element_text(color="black")) + scale_x_continuous(name="female genetic ancestry") + scale_y_continuous(limits=c(min(tmp8$probs), max(tmp8$probs)), name="grooming probability")
-#*****ARIELLE CHECK TO MAKE SURE THE MIN, MAX WORKS FOR THE LIMITS
 # Plot the probability of grooming behavior for anubis males as a function of the genetic ancestry of potential opposite-sex social partners (left bottom panel)
 test <- subset(tmp8, male_hybridscore_new==1)
 ggplot(test) + geom_line(aes(female_hybridscore_new, probs), size=2) + theme_classic()+ theme(legend.position = "none", text=element_text(size=24), axis.text = element_text(color="black")) + scale_x_continuous(name="female genetic ancestry") + scale_y_continuous(limits=c(min(tmp8$probs), max(tmp8$probs)), name="grooming probability")
-#*****ARIELLE CHECK TO MAKE SURE THE MIN, MAX WORKS FOR THE LIMITS
 
 # Plot the probability of grooming behavior for yellow females as a function of the genetic ancestry of potential opposite-sex social partners (bottom left panel)
 test <- subset(tmp8, female_hybridscore_new==1)
