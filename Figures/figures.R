@@ -8,7 +8,7 @@ groom <- read.csv(, header=T) # for Figures S2-4, load the proximity data set in
 
 # Load the data set for producing Figure S1 available at XXX
 # This data set is from the initial, monthly-based data set and contains all unique social group-month combinations
-s1 <- read.csv(, header=T)
+s1 <- read.csv("unique_social_group_months_FigS1.csv", header=T)
 
 # Load R libraries
 library(ggplot2)
@@ -238,7 +238,7 @@ ggplot(test) + geom_line(aes(male_rank_avg, probs), size=2) + theme_classic()+ t
 # Figure S1. The total effort invested in behavioral observations is consistent across study groups of different sizes.
 #############################################################################################################################
 # Plot figure S1
-ggplot(s1) + geom_point(alpha=0.5, size=2.5, aes(x=females_in_grp, y=female_point_samples_in_month, colour=grp)) + scale_x_continuous(name="adult females in social group") + scale_y_continuous(name="total adult female point samples\n per month per social group") + theme_classic() +  theme(axis.title=element_text(size=16), axis.text=element_text(size=16), legend.position = "none", text = element_text(color="black"))
+ggplot(s1) + geom_point(alpha=0.5, size=2.5, aes(x=females_in_group, y=total_adult_female_point_samples_in_month, colour=group_id)) + scale_x_continuous(name="adult females in social group") + scale_y_continuous(name="total adult female point samples\n per month per social group") + theme_classic() +  theme(axis.title=element_text(size=16), axis.text=element_text(size=16), legend.position = "none", text = element_text(color="black"))
 
 
 #############################################################################################################################
