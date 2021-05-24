@@ -1,7 +1,9 @@
 #!/usr/bin/env Rscript
 
 # Scripts for producing Figures 1-3, S1, and S5-6
-# The scripts for Figures S2-S4, S5c-d, S6c-d are not included here as they are identical to the scripts for Figures 1-3, S5, S6 except the dataset (groom) is replaced by the proximity data set (also availble at XXX) and the model used for predictions is the proximity logistic regression model
+# The scripts for Figures S2-S4, S5c-d, S6c-d are not included here as they are identical to the scripts for Figures 1-3 and S5-S6 except:
+# (1) the dataset (groom) is replaced by the proximity data set (also availble at XXX) and
+# (2) the model used for predictions is the proximity logistic regression model
 
 # Load the grooming data set available at XXX
 groom <- read.csv("groom_anonymized.csv", header=T) # for Figures S2-4, load the proximity data set (prox_anonymized.csv) instead
@@ -16,7 +18,7 @@ library(glmmTMB)
 
 # Need to run original grooming logistic regression model for some of the figure making
 # Grooming model (see script in Models directory)
-groom_model <- glmmTMB(groom_two_month ~ genetic_ancestry_male + genetic_ancestry_female + females_in_group + males_in_group + female_age + rank_female + rank_male + rank_female*rank_male + female_age_transformed + reproductive_state + assortative_genetic_ancestry_index + genetic_ancestry_male*reproductive_state + genetic_ancestry_female*reproductive_state + observer_effort + heterozygosity_male + heterozygosity_female + genetic_relatedness + pair_coresidency + (1 | female_id) + (1 | male_id), data = groom, family = "binomial") # for Figures S2-4, run the proximity logistic regression model instead (see script in Models directory)
+groom_model <- glmmTMB(groom_two_month ~ assortative_genetic_ancestry_index + heterozygosity_female + heterozygosity_male + genetic_relatedness + rank_female*rank_male + female_age + female_age_transformed + females_in_group + males_in_group + reproductive_state*genetic_ancestry_female + reproductive_state*genetic_ancestry_male + pair_coresidency + observer_effort + (1 | female_id) + (1 | male_id), data=groom, family="binomial") # for Figures S2-4, run the proximity logistic regression model instead (see script in Models directory)
 
 set.seed(1234) # so figures with any jittering are reproducible
 
@@ -27,27 +29,26 @@ set.seed(1234) # so figures with any jittering are reproducible
 ####################
 # Fig. 1A
 ####################
-# Calculate the probability of grooming among co-resident opposite-sex pairs, per two-month interval, for the most anubis-like males (above the 90th percentile for male genetic ancestry in the data set) and the most yellow-like males (below the 10th percentile for male genetic ancestry in the data set) without adjustment for other covariates
+# Calculate the probability of grooming among co-resident opposite-sex pairs per two-month interval, for the most anubis-like males (above the 90th percentile for male genetic ancestry in the data set) and the most yellow-like males (below the 10th percentile for male genetic ancestry in the data set) without adjustment for other covariates
 # Use the 90th and 10th percentiles across rows in the data sets
-highperc_1 <- subset(groom, genetic_ancestry_male>quantile(groom$genetic_ancestry_male, 0.9))
+highperc_1 <- subset(groom, genetic_ancestry_male>quantile(groom$genetic_ancestry_male, 0.9)) # get all lines of data for the most anubis-like males (above the 90th percentile for male genetic ancestry)
 highperc_1$set <- "above_90"
-highperc_2 <- highperc_1 %>% group_by(male_id) %>% mutate(count_behav=dplyr::n()) 
-highperc_3 <- highperc_2 %>% group_by(male_id, count_behav) %>% mutate(yes_behav=sum(groom_two_month))
-highperc_3$prop_behav <- highperc_3$yes_behav/highperc_3$count_behav
-highperc_3 <- highperc_3[!duplicated(highperc_3$male_id),]
-nrow(highperc_3)
+highperc_2 <- highperc_1 %>% group_by(male_id) %>% mutate(count_behav=dplyr::n()) # count the total number of grooming opportunities (i.e., the total number of co-resident pairings) for the most anubis-like males
+highperc_3 <- highperc_2 %>% group_by(male_id, count_behav) %>% mutate(yes_behav=sum(groom_two_month)) # count the total number of grooming occurrences for the most anubis-like males
+highperc_3$prop_behav <- highperc_3$yes_behav/highperc_3$count_behav # divide the total number of grooming occurrences by the total number of grooming opportunities to get the probability of grooming for the most anubis-like males (without adjustment for other covariates)
+highperc_3 <- highperc_3[!duplicated(highperc_3$male_id),] # only grab one row per male
 
-lowperc_1 <- subset(groom, genetic_ancestry_male<quantile(groom$genetic_ancestry_male, 0.1))
+lowperc_1 <- subset(groom, genetic_ancestry_male<quantile(groom$genetic_ancestry_male, 0.1)) # get all lines of data for the most yellow-like males (below the 10th percentile for male genetic ancestry)
 lowperc_1$set <- "below_10"
-lowperc_2 <- lowperc_1 %>% group_by(male_id) %>% mutate(count_behav=dplyr::n()) 
-lowperc_3 <- lowperc_2 %>% group_by(male_id, count_behav) %>% mutate(yes_behav=sum(groom_two_month))
-lowperc_3$prop_behav <- lowperc_3$yes_behav/lowperc_3$count_behav
-lowperc_3 <- lowperc_3[!duplicated(lowperc_3$male_id),]
-nrow(lowperc_3)
+lowperc_2 <- lowperc_1 %>% group_by(male_id) %>% mutate(count_behav=dplyr::n()) # count the total number of grooming opportunities (i.e., the total number of co-resident pairings) for the most yellow-like males
+lowperc_3 <- lowperc_2 %>% group_by(male_id, count_behav) %>% mutate(yes_behav=sum(groom_two_month)) # count the total number of grooming occurrences for the most yellow-like males
+lowperc_3$prop_behav <- lowperc_3$yes_behav/lowperc_3$count_behav # divide the total number of grooming occurrences by the total number of grooming opportunities to get the probability of grooming for the most yellow-like males (without adjustment for other covariates)
+lowperc_3 <- lowperc_3[!duplicated(lowperc_3$male_id),] # only grab one row per male
 
-tmp2 <- rbind(highperc_3, lowperc_3)
+tmp <- rbind(highperc_3, lowperc_3) # combine most anubis-like and most yellow-like males into a single dataframe
 
-ggplot(data=tmp2) + geom_violin(aes(x = set, y = prop_behav, color=set, fill=set),  alpha = 0.4) +  geom_jitter(aes(x = set, y = prop_behav, color=set, size=5)) + geom_boxplot(aes(x = set, y = prop_behav),  size=1.25, width=0.1, color="black", fill="white", outlier.colour = NA) + scale_y_continuous(name="grooming probability") + scale_x_discrete(labels=c("above_90"= "most anubis-like", "below_10" = "most yellow-like")) + theme_classic() + theme(legend.position = "none", legend.title = element_blank(), axis.title.x = element_blank(),text=element_text(size=28), axis.text = element_text(color="black")) + scale_color_manual(values = c("above_90" = "turquoise4", "below_10" = "turquoise4")) + scale_fill_manual(values = c("above_90" = "turquoise4", "below_10" = "turquoise4"))
+# Plot figure 1A
+ggplot(data=tmp) + geom_violin(aes(x = set, y = prop_behav, color=set, fill=set),  alpha = 0.4) +  geom_jitter(aes(x = set, y = prop_behav, color=set, size=5)) + geom_boxplot(aes(x = set, y = prop_behav),  size=1.25, width=0.1, color="black", fill="white", outlier.colour = NA) + scale_y_continuous(name="grooming probability") + scale_x_discrete(labels=c("above_90"= "most anubis-like", "below_10" = "most yellow-like")) + theme_classic() + theme(legend.position = "none", legend.title = element_blank(), axis.title.x = element_blank(),text=element_text(size=28), axis.text = element_text(color="black")) + scale_color_manual(values = c("above_90" = "turquoise4", "below_10" = "turquoise4")) + scale_fill_manual(values = c("above_90" = "turquoise4", "below_10" = "turquoise4"))
 
 
 ####################
@@ -340,3 +341,4 @@ tmp2 <- rbind(abovemed_3, belowmed_3)
 
 # Plot figure S6B
 ggplot(data=tmp2) + geom_jitter(aes(x = set, y = prop_behav, color=set, size=5), alpha=0.8) + geom_violin(aes(x = set, y = prop_behav, color=set, fill=set),  alpha = 0.4) + geom_boxplot(aes(x = set, y = prop_behav), size=1.25, color="black", width=0.1, fill="white", outlier.colour = NA) + scale_y_continuous(name="proportion of grooming occurrences\nout of all potential grooming opportunities")  + scale_x_discrete(labels=c("above_median"= "above median", "below_median" = "below median")) + theme_classic() + theme(legend.position = "none", legend.title = element_blank(), axis.title.x = element_blank(),text=element_text(size=30), axis.text = element_text(color="black")) + scale_color_manual(values = c("above_median" = "royalblue3", "below_median" = "royalblue3")) + scale_fill_manual(values = c("above_median" = "royalblue3", "below_median" = "royalblue3"))
+
