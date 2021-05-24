@@ -9,16 +9,25 @@ prox <- read.csv("prox_anonymized.csv", header=T)
 # Load R libraries
 library(glmmTMB)
 
-# Grooming model
+#############################################################################################################################
+# Model 1. Multivariate logistic regression model predicting grooming behavior.
+#############################################################################################################################
+
+# run grooming model
 groom_model <- glmmTMB(groom_two_month ~ assortative_genetic_ancestry_index + heterozygosity_female + heterozygosity_male + genetic_relatedness + rank_female*rank_male + female_age + female_age_transformed + females_in_group + males_in_group + reproductive_state*genetic_ancestry_female + reproductive_state*genetic_ancestry_male + pair_coresidency + observer_effort + (1 | female_id) + (1 | male_id), data=groom, family="binomial")
-                         
-# Proximity model
-prox_model <- glmmTMB(prox_two_month ~ assortative_genetic_ancestry_index + heterozygosity_female + heterozygosity_male + genetic_relatedness + rank_female*rank_male + female_age + female_age_transformed + females_in_group + males_in_group + reproductive_state*genetic_ancestry_female + reproductive_state*genetic_ancestry_male + pair_coresidency + observer_effort + (1 | female_id) + (1 | male_id), data=prox, family="binomial")
 
 # look at model output (this includes non-permuted p-values)
 summary(groom_model)
 groom_model_betas <- fixef(groom_model)$cond # get betas (effect estimates) for intercept and predictor variables 
- # effect estimates reported in Table 1  
+# effect estimates reported in Table 1  
+
+
+#############################################################################################################################
+# Model 2. Multivariate logistic regression model predicting proximity behavior.
+#############################################################################################################################
+
+# run proximity model
+prox_model <- glmmTMB(prox_two_month ~ assortative_genetic_ancestry_index + heterozygosity_female + heterozygosity_male + genetic_relatedness + rank_female*rank_male + female_age + female_age_transformed + females_in_group + males_in_group + reproductive_state*genetic_ancestry_female + reproductive_state*genetic_ancestry_male + pair_coresidency + observer_effort + (1 | female_id) + (1 | male_id), data=prox, family="binomial")
 
 # look at model output (this includes non-permuted p-values)
 summary(prox_model)
