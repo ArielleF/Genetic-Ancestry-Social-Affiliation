@@ -260,15 +260,15 @@ ggplot(s1) + geom_point(alpha=0.5, size=2.5, aes(x=females_in_group, y=total_adu
 # Calculate the probability of grooming among co-resident opposite-sex pairs per two-month interval, for each male in social groups with greater or less than the median number of co-resident males in the sample without adjustment for other covariates
 abovemed_1 <- subset(groom, males_in_group>quantile(groom$males_in_group, 0.5)) # get all lines of data with greater than the median number of co-resident males in the sample
 abovemed_1$set <- "above_median"
-abovemed_2 <- abovemed_1 %>% group_by(male_id) %>% mutate(count_behav=dplyr::n()) # count the total number of grooming opportunities (i.e., the total number of co-resident pairings) for males living in groups with with greater than the median number of co-resident males in the sample
-abovemed_3 <- abovemed_2 %>% group_by(male_id, count_behav) %>% mutate(yes_behav=sum(groom_two_month)) # count the total number of grooming occurrences (i.e., 1 for groom_two_month) for males living in groups with with greater than the median number of co-resident males in the sample
+abovemed_2 <- abovemed_1 %>% group_by(male_id) %>% mutate(count_behav=dplyr::n()) # count the total number of grooming opportunities (i.e., the total number of co-resident pairings) for males living in groups with greater than the median number of co-resident males in the sample
+abovemed_3 <- abovemed_2 %>% group_by(male_id, count_behav) %>% mutate(yes_behav=sum(groom_two_month)) # count the total number of grooming occurrences (i.e., 1 for groom_two_month) for males living in groups with greater than the median number of co-resident males in the sample
 abovemed_3$prop_behav <- abovemed_3$yes_behav/abovemed_3$count_behav # divide the total number of grooming occurrences by the total number of grooming opportunities to get the probability of grooming for males living in groups with greater than the median number of co-resident males in the sample (without adjustment for other covariates)
 abovemed_3 <- abovemed_3[!duplicated(abovemed_3$male_id),] # only grab one row per male
 
 belowmed_1 <- subset(groom, males_in_group<quantile(groom$males_in_group, 0.5)) # get all lines of data with less than the median number of co-resident males in the sample
 belowmed_1$set <- "below_median"
-belowmed_2 <- belowmed_1 %>% group_by(male_id) %>% mutate(count_behav=dplyr::n()) # count the total number of grooming opportunities (i.e., the total number of co-resident pairings) for males living in groups with with less than the median number of co-resident males in the sample
-belowmed_3 <- belowmed_2 %>% group_by(male_id, count_behav) %>% mutate(yes_behav=sum(groom_two_month)) # count the total number of grooming occurrences (i.e., 1 for groom_two_month) for males living in groups with with less than the median number of co-resident males in the sample
+belowmed_2 <- belowmed_1 %>% group_by(male_id) %>% mutate(count_behav=dplyr::n()) # count the total number of grooming opportunities (i.e., the total number of co-resident pairings) for males living in groups with less than the median number of co-resident males in the sample
+belowmed_3 <- belowmed_2 %>% group_by(male_id, count_behav) %>% mutate(yes_behav=sum(groom_two_month)) # count the total number of grooming occurrences (i.e., 1 for groom_two_month) for males living in groups with less than the median number of co-resident males in the sample
 belowmed_3$prop_behav <- belowmed_3$yes_behav/belowmed_3$count_behav # divide the total number of grooming occurrences by the total number of grooming opportunities to get the probability of grooming for males living in groups with less than the median number of co-resident males in the sample (without adjustment for other covariates)
 belowmed_3 <- belowmed_3[!duplicated(belowmed_3$male_id),] # only grab one row per male
 
@@ -282,17 +282,17 @@ ggplot(data=tmp) + geom_jitter(aes(x = set, y = prop_behav, color=set, size=5), 
 # Fig. S5B
 ####################
 # Calculate the probability of grooming among co-resident opposite-sex pairs per two-month interval, for each female in social groups with greater or less than the median number of co-resident males in the sample without adjustment for other covariates
-#abovemed_1 <- subset(groom, males_in_group>quantile(groom$males_in_group, 0.5)) # get all lines of data with greater than the median number of co-resident males in the sample - already done for Figure S5A so do not need to do here
-#abovemed_1$set <- "above_median" # already done for Figure S5A so do not need to do here
-abovemed_2 <- abovemed_1 %>% group_by(female_id) %>% mutate(count_behav=dplyr::n()) # count the total number of grooming opportunities (i.e., the total number of co-resident pairings) for females living in groups with with greater than the median number of co-resident males in the sample
-abovemed_3 <- abovemed_2 %>% group_by(female_id, count_behav) %>% mutate(yes_behav=sum(groom_two_month)) # count the total number of grooming occurrences (i.e., 1 for groom_two_month) for females living in groups with with greater than the median number of co-resident males in the sample
+#abovemed_1 <- subset(groom, males_in_group>quantile(groom$males_in_group, 0.5)) # get all lines of data with greater than the median number of co-resident males in the sample - already done for Figure S5A so do not need to do again
+#abovemed_1$set <- "above_median" # already done for Figure S5A so do not need to do again
+abovemed_2 <- abovemed_1 %>% group_by(female_id) %>% mutate(count_behav=dplyr::n()) # count the total number of grooming opportunities (i.e., the total number of co-resident pairings) for females living in groups with greater than the median number of co-resident males in the sample
+abovemed_3 <- abovemed_2 %>% group_by(female_id, count_behav) %>% mutate(yes_behav=sum(groom_two_month)) # count the total number of grooming occurrences (i.e., 1 for groom_two_month) for females living in groups with greater than the median number of co-resident males in the sample
 abovemed_3$prop_behav <- abovemed_3$yes_behav/abovemed_3$count_behav # divide the total number of grooming occurrences by the total number of grooming opportunities to get the probability of grooming for females living in groups with greater than the median number of co-resident males in the sample (without adjustment for other covariates)
 abovemed_3 <- abovemed_3[!duplicated(abovemed_3$female_id),] # only grab one row per female
 
-#belowmed_1 <- subset(groom, males_in_group<quantile(groom$males_in_group, 0.5)) # get all lines of data with greater than the median number of co-resident males in the sample - already done for Figure S5A so do not need to do here
-#belowmed_1$set <- "below_median"  # already done for Figure S5A so do not need to do here
-belowmed_2 <- belowmed_1 %>% group_by(female_id) %>% mutate(count_behav=dplyr::n()) # count the total number of grooming opportunities (i.e., the total number of co-resident pairings) for females living in groups with with less than the median number of co-resident males in the sample
-belowmed_3 <- belowmed_2 %>% group_by(female_id, count_behav) %>% mutate(yes_behav=sum(groom_two_month)) # count the total number of grooming occurrences (i.e., 1 for groom_two_month) for females living in groups with with less than the median number of co-resident males in the sample
+#belowmed_1 <- subset(groom, males_in_group<quantile(groom$males_in_group, 0.5)) # get all lines of data with greater than the median number of co-resident males in the sample - already done for Figure S5A so do not need to do again
+#belowmed_1$set <- "below_median"  # already done for Figure S5A so do not need to do again
+belowmed_2 <- belowmed_1 %>% group_by(female_id) %>% mutate(count_behav=dplyr::n()) # count the total number of grooming opportunities (i.e., the total number of co-resident pairings) for females living in groups with less than the median number of co-resident males in the sample
+belowmed_3 <- belowmed_2 %>% group_by(female_id, count_behav) %>% mutate(yes_behav=sum(groom_two_month)) # count the total number of grooming occurrences (i.e., 1 for groom_two_month) for females living in groups with less than the median number of co-resident males in the sample
 belowmed_3$prop_behav <- belowmed_3$yes_behav/belowmed_3$count_behav # divide the total number of grooming occurrences by the total number of grooming opportunities to get the probability of grooming for females living in groups with less than the median number of co-resident males in the sample (without adjustment for other covariates)
 belowmed_3 <- belowmed_3[!duplicated(belowmed_3$female_id),] # only grab one row per female
 
@@ -310,21 +310,21 @@ ggplot(data=tmp) + geom_jitter(aes(x = set, y = prop_behav, color=set, size=5), 
 # Fig. S6A
 ####################
 # Calculate the probability of grooming among co-resident opposite-sex pairs per two-month interval, for each male in social groups with greater or less than the median number of co-resident females in the sample without adjustment for other covariates
-abovemed_1 <- subset(groom, females_in_group>quantile(groom$females_in_group, 0.5))
+abovemed_1 <- subset(groom, females_in_group>quantile(groom$females_in_group, 0.5)) # get all lines of data with greater than the median number of co-resident females in the sample
 abovemed_1$set <- "above_median"
-abovemed_2 <- abovemed_1 %>% group_by(male_id) %>% mutate(count_behav=dplyr::n()) 
-abovemed_3 <- abovemed_2 %>% group_by(male_id, count_behav) %>% mutate(yes_behav=sum(groom_two_month))
-abovemed_3$prop_behav <- abovemed_3$yes_behav/abovemed_3$count_behav
-abovemed_3 <- abovemed_3[!duplicated(abovemed_3$male_id),]
+abovemed_2 <- abovemed_1 %>% group_by(male_id) %>% mutate(count_behav=dplyr::n()) # count the total number of grooming opportunities (i.e., the total number of co-resident pairings) for males living in groups with greater than the median number of co-resident females in the sample
+abovemed_3 <- abovemed_2 %>% group_by(male_id, count_behav) %>% mutate(yes_behav=sum(groom_two_month))  # count the total number of grooming occurrences (i.e., 1 for groom_two_month) for males living in groups with greater than the median number of co-resident females in the sample
+abovemed_3$prop_behav <- abovemed_3$yes_behav/abovemed_3$count_behav # divide the total number of grooming occurrences by the total number of grooming opportunities to get the probability of grooming for males living in groups with greater than the median number of co-resident females in the sample (without adjustment for other covariates)
+abovemed_3 <- abovemed_3[!duplicated(abovemed_3$male_id),] # only grab one row per male
 
-belowmed_1 <- subset(groom, females_in_group<quantile(groom$females_in_group, 0.5))
+belowmed_1 <- subset(groom, females_in_group<quantile(groom$females_in_group, 0.5)) # get all lines of data with less than the median number of co-resident females in the sample
 belowmed_1$set <- "below_median"
-belowmed_2 <- belowmed_1 %>% group_by(male_id) %>% mutate(count_behav=dplyr::n()) 
-belowmed_3 <- belowmed_2 %>% group_by(male_id, count_behav) %>% mutate(yes_behav=sum(groom_two_month))
-belowmed_3$prop_behav <- belowmed_3$yes_behav/belowmed_3$count_behav
-belowmed_3 <- belowmed_3[!duplicated(belowmed_3$male_id),]
+belowmed_2 <- belowmed_1 %>% group_by(male_id) %>% mutate(count_behav=dplyr::n()) # count the total number of grooming opportunities (i.e., the total number of co-resident pairings) for males living in groups with less than the median number of co-resident females in the sample
+belowmed_3 <- belowmed_2 %>% group_by(male_id, count_behav) %>% mutate(yes_behav=sum(groom_two_month)) # count the total number of grooming occurrences (i.e., 1 for groom_two_month) for males living in groups with less than the median number of co-resident females in the sample
+belowmed_3$prop_behav <- belowmed_3$yes_behav/belowmed_3$count_behav # divide the total number of grooming occurrences by the total number of grooming opportunities to get the probability of grooming for males living in groups with less than the median number of co-resident females in the sample (without adjustment for other covariates)
+belowmed_3 <- belowmed_3[!duplicated(belowmed_3$male_id),]  # only grab one row per male
 
-tmp <- rbind(abovemed_3, belowmed_3)
+tmp <- rbind(abovemed_3, belowmed_3) # combine males living in groups with greater than and less than the median number of co-resident females in the sample into a single dataframe
 
 # Plot figure S6A
 ggplot(data=tmp) + geom_jitter(aes(x = set, y = prop_behav, color=set, size=5), alpha=0.8) + geom_violin(aes(x = set, y = prop_behav, color=set, fill=set),  alpha = 0.4) + geom_boxplot(aes(x = set, y = prop_behav), size=1.25, color="black", width=0.1, fill="white", outlier.colour = NA) + scale_y_continuous(name="proportion of grooming occurrences\nout of all potential grooming opportunities")  + scale_x_discrete(labels=c("above_median"= "above median", "below_median" = "below median")) + theme_classic() + theme(legend.position = "none", legend.title = element_blank(), axis.title.x = element_blank(),text=element_text(size=30), axis.text = element_text(color="black")) + scale_color_manual(values = c("above_median" = "turquoise4", "below_median" = "turquoise4")) + scale_fill_manual(values = c("above_median" = "turquoise4", "below_median" = "turquoise4"))
@@ -333,22 +333,21 @@ ggplot(data=tmp) + geom_jitter(aes(x = set, y = prop_behav, color=set, size=5), 
 # Fig. S6B
 ####################
 # Calculate the probability of grooming among co-resident opposite-sex pairs per two-month interval, for each female in social groups with greater or less than the median number of co-resident females in the sample without adjustment for other covariates
-abovemed_1 <- subset(groom, females_in_group>quantile(groom$females_in_group, 0.5))
-abovemed_1$set <- "above_median"
-abovemed_2 <- abovemed_1 %>% group_by(female_id) %>% mutate(count_behav=dplyr::n()) 
-abovemed_3 <- abovemed_2 %>% group_by(female_id, count_behav) %>% mutate(yes_behav=sum(groom_two_month))
-abovemed_3$prop_behav <- abovemed_3$yes_behav/abovemed_3$count_behav
-abovemed_3 <- abovemed_3[!duplicated(abovemed_3$female_id),]
+#abovemed_1 <- subset(groom, females_in_group>quantile(groom$females_in_group, 0.5)) # get all lines of data with greater than the median number of co-resident females in the sample - already done for Figure S6A so do not need to do again
+#abovemed_1$set <- "above_median" # already done for Figure S6A so do not need to do again
+abovemed_2 <- abovemed_1 %>% group_by(female_id) %>% mutate(count_behav=dplyr::n()) # count the total number of grooming opportunities (i.e., the total number of co-resident pairings) for females living in groups with greater than the median number of co-resident females in the sample
+abovemed_3 <- abovemed_2 %>% group_by(female_id, count_behav) %>% mutate(yes_behav=sum(groom_two_month)) # count the total number of grooming occurrences (i.e., 1 for groom_two_month) for females living in groups with greater than the median number of co-resident females in the sample
+abovemed_3$prop_behav <- abovemed_3$yes_behav/abovemed_3$count_behav # divide the total number of grooming occurrences by the total number of grooming opportunities to get the probability of grooming for females living in groups with greater than the median number of co-resident females in the sample (without adjustment for other covariates)
+abovemed_3 <- abovemed_3[!duplicated(abovemed_3$female_id),] # only grab one row per female
 
-belowmed_1 <- subset(groom, females_in_group<quantile(groom$females_in_group, 0.5))
-belowmed_1$set <- "below_median"
-belowmed_2 <- belowmed_1 %>% group_by(female_id) %>% mutate(count_behav=dplyr::n()) 
-belowmed_3 <- belowmed_2 %>% group_by(female_id, count_behav) %>% mutate(yes_behav=sum(groom_two_month))
-belowmed_3$prop_behav <- belowmed_3$yes_behav/belowmed_3$count_behav
-belowmed_3 <- belowmed_3[!duplicated(belowmed_3$female_id),]
+#belowmed_1 <- subset(groom, females_in_group<quantile(groom$females_in_group, 0.5)) # get all lines of data with greater than the median number of co-resident females in the sample - already done for Figure S6A so do not need to do again
+#belowmed_1$set <- "below_median" # already done for Figure S6A so do not need to do again
+belowmed_2 <- belowmed_1 %>% group_by(female_id) %>% mutate(count_behav=dplyr::n()) # count the total number of grooming opportunities (i.e., the total number of co-resident pairings) for females living in groups with less than the median number of co-resident females in the sample
+belowmed_3 <- belowmed_2 %>% group_by(female_id, count_behav) %>% mutate(yes_behav=sum(groom_two_month))  # count the total number of grooming occurrences (i.e., 1 for groom_two_month) for females living in groups with less than the median number of co-resident females in the sample
+belowmed_3$prop_behav <- belowmed_3$yes_behav/belowmed_3$count_behav #  divide the total number of grooming occurrences by the total number of grooming opportunities to get the probability of grooming for females living in groups with less than the median number of co-resident females in the sample (without adjustment for other covariates)
+belowmed_3 <- belowmed_3[!duplicated(belowmed_3$female_id),] # only grab one row per female
 
-tmp <- rbind(abovemed_3, belowmed_3)
+tmp <- rbind(abovemed_3, belowmed_3)# combine females living in groups with greater than and less than the median number of co-resident females in the sample into a single dataframe
 
 # Plot figure S6B
 ggplot(data=tmp) + geom_jitter(aes(x = set, y = prop_behav, color=set, size=5), alpha=0.8) + geom_violin(aes(x = set, y = prop_behav, color=set, fill=set),  alpha = 0.4) + geom_boxplot(aes(x = set, y = prop_behav), size=1.25, color="black", width=0.1, fill="white", outlier.colour = NA) + scale_y_continuous(name="proportion of grooming occurrences\nout of all potential grooming opportunities")  + scale_x_discrete(labels=c("above_median"= "above median", "below_median" = "below median")) + theme_classic() + theme(legend.position = "none", legend.title = element_blank(), axis.title.x = element_blank(),text=element_text(size=30), axis.text = element_text(color="black")) + scale_color_manual(values = c("above_median" = "royalblue3", "below_median" = "royalblue3")) + scale_fill_manual(values = c("above_median" = "royalblue3", "below_median" = "royalblue3"))
-
