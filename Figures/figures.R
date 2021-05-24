@@ -67,11 +67,11 @@ tmp <- merge(groomm_r,m_rank) # combine dataframe of averaged variables with the
 # Get the grooming probability for the range of male rank values assuming average values for all other covariates
 tmp$probs <- predict(groom_model, tmp, type="response", re.form=NA)
 
-# For the colored dots which show probabilities based on counts of grooming occurrences
-raw <- groom %>% group_by(rank_male) %>% mutate(count_groom=dplyr::n()) 
-raw2 <- raw %>% group_by(rank_male, count_groom) %>% mutate(yes_groom=sum(groom_two_month))
-raw3 <- distinct(raw2, rank_male, count_groom, yes_groom)
-raw3$groom_prox <- raw3$yes_groom/raw3$count_groom
+# For the colored dots which show probabilities based on counts of grooming occurrences (same calculation as in figure 1A but per rank)
+raw <- groom %>% group_by(rank_male) %>% mutate(count_groom=dplyr::n()) # count the total number of grooming opportunities (i.e., the total number of co-resident pairings) for each male rank
+raw2 <- raw %>% group_by(rank_male, count_groom) %>% mutate(yes_groom=sum(groom_two_month)) # count the total number of grooming occurrences (i.e., 1 for groom_two_month) for each male rank
+raw3 <- distinct(raw2, rank_male, count_groom, yes_groom)  # only grab one row per rank
+raw3$groom_prox <- raw3$yes_groom/raw3$count_groom # divide the total number of grooming occurrences by the total number of grooming opportunities to get the probability of grooming for each male rank (without adjustment for other covariates)
 
 # Plot figure 1B
 ggplot() + geom_line(data=tmp, aes(rank_male, probs), color="black", size=1, linetype="dashed") + geom_jitter(data=groom, aes(rank_male, groom_two_month), alpha=0.05, height=0.05, color="grey70") + scale_x_continuous(name="male rank",breaks=c(1,5,10,15,20,25,30)) +  theme_classic() + theme(text=element_text(size=20), axis.text = element_text(color="black")) + geom_point(data=raw3, aes(rank_male, groom_prox), size=3, color="turquoise4") + scale_y_continuous(name="grooming probability") 
