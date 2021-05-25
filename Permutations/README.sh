@@ -11,7 +11,7 @@ cat prox_permuted_results_* >> all.prox_permuted_results.txt
 rm groom_permuted_results_*
 rm prox_permuted_results_*
 
-# check that each data frame with all of the permutaiton results has 1,000 lines corresponding to the 1,000 permutations run
+# check that each data frame with all of the permutation results has 1,000 lines corresponding to the 1,000 permutations run
 wc -l all.*
 #1000 all.groom_permuted_results.txt
 #1000 all.prox_permuted_results.txt
