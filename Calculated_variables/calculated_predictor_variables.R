@@ -49,5 +49,3 @@ groom$female_age_transformed2 <- -1*(((groom$female_age - 14)/14)^2)
 
 # female_age_transformed2 should equal the female_age_transformed2 column in the groom dataframe
 sum(groom$female_age_transformed2==groom$female_age_transformed)==nrow(groom) # TRUE - these columns match!
-
-add gmarrang
