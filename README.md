@@ -11,8 +11,6 @@
 
 Data from this paper and used by these scripts can be downloaded from the Duke Data Repository: XXX link. 
 
-Include simulation coding?
-
 For script-related questions, please email Arielle Fogel at <afogel29@gmail.com>.
 
 Thank you for your interest in our work!
