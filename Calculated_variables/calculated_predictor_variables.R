@@ -10,7 +10,7 @@ geno <- read.csv("geno_anonymized.csv", header=T)
 
 # Load R libraries
 library(dplyr)
-library(related)
+
 
 #############################################################################################################################
 # Assortative genetic ancestry index
@@ -83,10 +83,10 @@ colnames(tmp)[ncol(tmp)] <- c("heterozyosity_female2")
 tmp2 <- merge(tmp, gen_div[c(1,19)], by.x=c("male_id"), by.y=c("id"), all.x=T)
 colnames(tmp2)[ncol(tmp2)] <- c("heterozyosity_male2")
 
-# female_heterozygosity2 should equal the female_heterozygosity2
+# female_heterozygosity2 should equal female_heterozygosity
 sum(tmp2$heterozyosity_female2==tmp2$heterozyosity_female)==nrow(tmp2) # TRUE - these columns match!
 
-# male_heterozygosity2 should equal the female_heterozygosity2
+# male_heterozygosity2 should equal male_heterozygosity
 sum(tmp2$heterozyosity_male2==tmp2$heterozyosity_male)==nrow(tmp2) # TRUE - these columns match!
 
 
@@ -94,42 +94,35 @@ sum(tmp2$heterozyosity_male2==tmp2$heterozyosity_male)==nrow(tmp2) # TRUE - thes
 # Relatedness
 #############################################################################################################################
 
-# Now calculate Queller-Goodnight Estimate of Relatedness
+# Estimate genetic relatedness for each male-female dyad using the method of Queller-Goodnight (Queller & Goodnight 1989 - https://doi.org/10.2307/2409206)
+# To do this, we will:
+# 1. use the same genotype data used for estimating heterozygosity
+# 2. using the function coancestry with the estimator “quellergt” in the R package related (Pew et al. 2015 - https://doi.org/10.1111/1755-0998.12323; Wang 2011 - https://doi.org/10.1111/j.1755-0998.2010.02885.x)
+library(related)
 
+geno_QG <- geno
+geno_QG$id <- as.character(geno_QG$id) # format id as character instead of factor for the readgenotypedata function below
+geno_QG[is.na(geno_QG)] <- 0 # change all NAs to 0
 
-# subset geno data such that it only contains sname and genotype data for our study subjects (this is new as of 29-June-2020)
-tmp <- merge(geno, females, by.x=c("sname"), by.y=c("female_sname"))
-tmp2 <- merge(geno, males, by.x=c("sname"), by.y=c("male_sname"))
-QG_data <- rbind(tmp, tmp2)
-
-write.table(QG_data,"QG_data", sep="\t", row.names=FALSE, col.names = FALSE)
-QG_data = read.delim("QG_data", header=F)
-QG_data$V1 <- as.character(QG_data$V1)
-QG_data[is.na(QG_data)] <- 0 # change all NAs to 0
-
-summary(QG_data)
-
-input <- readgenotypedata(QG_data)
-input$nalleles
+input <- readgenotypedata(geno_QG)
 
 # point estimates of relatedness
-pt_results_1 <- coancestry(input$gdata, quellergt = 1)
-pt_results_1_est <- pt_results_1$relatedness
+pt_results_1 <- coancestry(input$gdata, quellergt = 1) # get the relatedness estimate from Queller and Goodnight (1989) - quellergt=1 gets point estimates (as opposted to 95% confidence intervals)
+pt_results_1_est <- pt_results_1$relatedness # get the dataframe containing all pairwise estimates of relatedness
 
-QG_1 <- pt_results_1_est[c(2:3,10)]
-QG_1$pair1 <- paste(QG_1$ind1.id, QG_1$ind2.id, sep="_")
-QG_1$pair2 <- paste(QG_1$ind2.id, QG_1$ind1.id, sep="_")
+QG_1 <- pt_results_1_est[c(2:3,10)] # grab the columns we need - the individuals in the pair and the Queller and Goodnight (1989) estimates
+QG_1$pair_id <- paste(QG_1$ind1.id, QG_1$ind2.id, sep="_") # make a male-female dyad id and put in new column called pair_id (makes it easier for merging based on dyad-level characteristics)
 
-QG_final <- subset(QG_1, select=c("quellergt", "pair1"))
+QG_final <- subset(QG_1, select=c("quellergt", "pair_id")) # only grab the columns we need
 
-QG_final2 <- subset(QG_1, select=c("quellergt", "pair2"))
-names(QG_final2)[names(QG_final2) == "pair2"] <- "pair1"
+# merge with groom data set to check that what we calculated here is equal to the relatedness estimates in the groom dataframe
+tmp <- groom
+tmp$pair_id <- paste(tmp$female_id, tmp$male_id, sep="_")
+tmp2 <- merge(tmp, QG_final, by=c("pair_id"), all.x=T)
 
-# get stats on loci genotyped across all subjects
-tmp <- QG_data[c(1)] # get list of all study subjects
-tmp2 <- merge(tmp, geno_gen_div, by.x=c("V1"), by.y=c("sname"))
-mean(tmp2$loci_genotyped) #13.13176       
-sd(tmp2$loci_genotyped) #1.215523
+# quellergt should equal the genetic_relatedness
+sum(tmp2$quellergt==tmp2$genetic_relatedness)==nrow(tmp2) # TRUE - these columns match!
+
 
 #############################################################################################################################
 # Female transformed age
