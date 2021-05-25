@@ -1,6 +1,7 @@
+# we will run 50 jobs per array since each job is currently set to run 20 permutations (can be changed by setting nperm to a value other than 20 in groom_perm.R and prox_perm.R) and we want to run 1,000 permutations per model in total (50 jobs * 20 permutations/job = 1,000 permutations total)
 # module load R before running script since we're set up the groom_perm.R and prox_perm.R to load our current environment
-sbatch --mem=100 --cpus-per-task=20 --array=1-50%25 groom_perm.R
-sbatch --mem=100 --cpus-per-task=20 --array=1-50%25 prox_perm.R 
+sbatch --mem=100 --cpus-per-task=20 --array=1-50%5 groom_perm.R
+sbatch --mem=100 --cpus-per-task=20 --array=1-50%5 prox_perm.R 
 
 # concatenate the 50 jobs per array (20 permutations per job) into a single file for each model
 cat groom_permuted_results_* >> all.groom_permuted_results.txt
