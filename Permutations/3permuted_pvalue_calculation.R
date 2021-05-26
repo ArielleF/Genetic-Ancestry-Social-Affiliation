@@ -13,6 +13,9 @@ nrow(permuted_results_groom)==totalperm # TRUE
 nrow(permuted_results_prox)==totalperm # TRUE
 
 # We will compare the effect sizes estimated from the permuted data sets with the effect size estimated from the observed data set so need to rerun the original model to get effect sizes from the empirical data sets
+# Load the grooming and proximity data sets available at XXX
+groom <- read.csv("groom_anonymized.csv", header=T) 
+prox <- read.csv("prox_anonymized.csv", header=T) 
 # run grooming model (the same code is in the Models directory)
 groom_model <- glmmTMB(groom_two_month ~ assortative_genetic_ancestry_index + heterozygosity_female + heterozygosity_male + genetic_relatedness + rank_female*rank_male + female_age + female_age_transformed + females_in_group + males_in_group + reproductive_state*genetic_ancestry_female + reproductive_state*genetic_ancestry_male + pair_coresidency + observer_effort + (1 | female_id) + (1 | male_id), data=groom, family="binomial")
 groom_model_betas <- fixef(groom_model)$cond # get betas (effect estimates) for intercept and predictor variables 
