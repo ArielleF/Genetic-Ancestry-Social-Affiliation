@@ -31,7 +31,8 @@ permuted_results=Reduce(rbind,parLapply(clus,1:nperm,function(perm){
 }))
 
 
-write.table(permuted_results,file=paste0("groom_permuted_results_",seed,".txt"),quote=F,col.names=F,row.names=F)
+write.table(permuted_results,file=paste0("groom_permuted_results_",as.numeric(Sys.getenv(c("SLURM_ARRAY_TASK_ID"))),".txt"),quote=F,col.names=F,row.names=F) # output results into text file with name that identifies the job number within the array (i.e., 1-50) so that this file doesn't overwrite other job outputs from the array
+
 
 print("done")
 
