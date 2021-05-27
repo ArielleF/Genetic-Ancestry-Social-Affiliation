@@ -1,11 +1,10 @@
 #!/bin/env Rscript
-load("groom_perm.Rd")
+load("groom_perm.Rd") # generated in script 1prepare_for_permutations.R
 
 # Load R libraries
 library(parallel)
 library(doParallel)
-seed=as.numeric(Sys.getenv(c("SLURM_ARRAY_TASK_ID")))
-set.seed(seed)
+
 clus <- makeCluster(20)
 registerDoParallel(cores=20)
 
