@@ -4,6 +4,7 @@ load("prox_perm.Rd")
 # Load R libraries
 library(parallel)
 library(doParallel)
+
 clus <- makeCluster(20)
 registerDoParallel(cores=20)
 
