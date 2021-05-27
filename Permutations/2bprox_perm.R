@@ -4,8 +4,6 @@ load("prox_perm.Rd")
 # Load R libraries
 library(parallel)
 library(doParallel)
-seed=as.numeric(Sys.getenv(c("SLURM_ARRAY_TASK_ID")))
-set.seed(seed)
 clus <- makeCluster(20)
 registerDoParallel(cores=20)
 
