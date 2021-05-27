@@ -1,3 +1,6 @@
+# This directory contains multiple scripts for using permutation tests to assess statistical significance in the the multivariate logistic regression models.
+# Note that because the p-values reported in the manuscript were based on permutations, re-running these scripts will replicate the results but with exact p-values that may differ slightly.
+
 # In R, run 1prepare_for_permutations.R which computes, for each female-two-month interval combination, the proportion of dyads where an event (grooming or proximity) occurred (these values are estimates of the probability of grooming or proximity with any male, per female-interval combination). This script generates two R data files (groom_perm.Rd and prox_perm.Rd) which can then be uploaded to a computing cluster for parallelization of permutations.
 
 # In a directory on a computing cluster containing both R data files, run the scripts 2agroom_perm.R and 2bprox_perm.R as arrays (see below) which will:
