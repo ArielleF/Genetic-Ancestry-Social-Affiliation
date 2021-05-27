@@ -3,5 +3,5 @@
 #############################################################################################################################
 
 # We generated genetic estimates of hybridity (i.e., the proportion of each individual’s genome estimated to be from anubis ancestry) for study subjects based on genotypes at up to 13 highly polymorphic microsatellite markers and average ancestry assignments produced using the Bayesian clustering algorithm STRUCTURE 2.3.4 (Falush et al., 2003 - https://www.genetics.org/content/164/4/1567; Pritchard et al., 2000 - https://www.genetics.org/content/155/2/945; see Tung et al. 2008 - https://doi.org/10.1111/j.1365-294X.2008.03723.x).
-# The microsatellite genotype data set for study subjects is available at XXX ("geno_anonymized.csv") - for genetic ancestry estimates, we excluded the d13s159b locus
-# See Tung et al. 2008 (https://doi.org/10.1111/j.1365-294X.2008.03723.x) for details
+# The microsatellite genotype data set for study subjects is available at XXX ("geno_anonymized.csv"). Note that for genetic ancestry estimates, we excluded the d13s159b locus.
+# See Tung et al. 2008 (https://doi.org/10.1111/j.1365-294X.2008.03723.x) for details about estimating genetic ancestry.
