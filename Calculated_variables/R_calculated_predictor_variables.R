@@ -32,7 +32,7 @@ groom$assortative_genetic_ancestry_index2 <- apply(groom[, (ncol(groom)-1):ncol(
 sum(groom$assortative_genetic_ancestry_index2==groom$assortative_genetic_ancestry_index)==nrow(groom) # TRUE - these columns match!
 
 #############################################################################################################################
-# Heterozygostiy
+# Heterozygosity
 #############################################################################################################################
 
 # Calculate each individual's genetic diversity by dividing the number of heterozygous loci by the number of genotyped loci for each individual (following Charpentier et al. 2008 - https://doi.org/10.1111/j.1365-294X.2008.03724.x).
