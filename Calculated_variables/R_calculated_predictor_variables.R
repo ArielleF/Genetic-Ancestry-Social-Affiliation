@@ -98,7 +98,7 @@ sum(tmp2$heterozyosity_male2==tmp2$heterozyosity_male)==nrow(tmp2) # TRUE - thes
 # To do this, we will:
 # 1. use the same genotype data used for estimating heterozygosity
 # 2. using the function coancestry with the estimator “quellergt” in the R package related (Pew et al. 2015 - https://doi.org/10.1111/1755-0998.12323; Wang 2011 - https://doi.org/10.1111/j.1755-0998.2010.02885.x)
-library(related)
+library(related) # if you have never installed this package before, this package is not on the CRAN website so follow specific instructions for installation here: https://timothyfrasier.github.io/files/Tutorial.pdf
 
 geno_QG <- geno
 geno_QG$id <- as.character(geno_QG$id) # format id as character instead of factor for the readgenotypedata function below
