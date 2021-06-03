@@ -9,7 +9,7 @@
 3. ***Permutations***: scripts for permutation tests to assess statistical significance in the multivariate logistic regression models.
 4. ***Figures***: scripts for making main text and supplementary figures.
 
-Data from this paper and used by these scripts can be downloaded from the Duke Data Repository: XXX link. 
+Data from this paper and used by these scripts can be downloaded from the Duke Data Repository: https://doi.org/10.7924/r4kp82d1z. 
 
 For script-related questions, please email Arielle Fogel at <afogel29@gmail.com>.
 
