@@ -13,7 +13,7 @@ nrow(permuted_results_groom)==totalperm # TRUE
 nrow(permuted_results_prox)==totalperm # TRUE
 
 # We will compare the effect sizes estimated from the permuted data sets with the effect size estimated from the observed data set so need to rerun the original model to get effect sizes from the empirical data sets
-# Load the grooming and proximity data sets available at XXX
+# Load the grooming and proximity data sets available at https://doi.org/10.7924/r4kp82d1z
 groom <- read.csv("groom_anonymized.csv", header=T) 
 prox <- read.csv("prox_anonymized.csv", header=T) 
 # run grooming model (the same code is in the Models directory)
