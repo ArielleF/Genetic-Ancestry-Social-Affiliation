@@ -23,6 +23,7 @@ groom_model <- glmmTMB(groom_two_month ~ assortative_genetic_ancestry_index + he
 
 set.seed(1234) # so figures with any jittering are reproducible - will not completely match the published figures because although this set.seed was used to generate the paper's figures, the figures were produced in a different order below (order below reflects order of figures in the paper)
 
+
 #############################################################################################################################
 # Figure 1. Genetic ancestry and dominance rank predict the tendency to groom with an opposite-sex partner.
 #############################################################################################################################
@@ -50,7 +51,7 @@ tmp <- rbind(highperc_3, lowperc_3) # combine most anubis-like and most yellow-l
 
 # Plot figure 1A
 ggplot(data=tmp) + geom_violin(aes(x = set, y = prop_behav, color=set, fill=set),  alpha = 0.4) +  geom_jitter(aes(x = set, y = prop_behav, color=set, size=5)) + geom_boxplot(aes(x = set, y = prop_behav),  size=1.25, width=0.1, color="black", fill="white", outlier.colour = NA) + scale_y_continuous(name="grooming probability") + scale_x_discrete(labels=c("above_90"= "most anubis-like", "below_10" = "most yellow-like")) + theme_classic() + theme(legend.position = "none", legend.title = element_blank(), axis.title.x = element_blank(),text=element_text(size=28), axis.text = element_text(color="black")) + scale_color_manual(values = c("above_90" = "turquoise4", "below_10" = "turquoise4")) + scale_fill_manual(values = c("above_90" = "turquoise4", "below_10" = "turquoise4"))
-
+ggsave("fig1A.png")
 
 ####################
 # Fig. 1B
@@ -76,7 +77,7 @@ raw3$groom_prox <- raw3$yes_groom/raw3$count_groom # divide the total number of 
 
 # Plot figure 1B
 ggplot() + geom_line(data=tmp, aes(rank_male, probs), color="black", size=1, linetype="dashed") + geom_jitter(data=groom, aes(rank_male, groom_two_month), alpha=0.05, height=0.05, color="grey70") + scale_x_continuous(name="male rank",breaks=c(1,5,10,15,20,25,30)) +  theme_classic() + theme(text=element_text(size=20), axis.text = element_text(color="black")) + geom_point(data=raw3, aes(rank_male, groom_prox), size=3, color="turquoise4") + scale_y_continuous(name="grooming probability") 
-
+ggsave("fig1B.png")
 
 ####################
 # Fig. 1C
@@ -101,7 +102,7 @@ tmp <- rbind(highperc_3, lowperc_3)
 
 # Plot figure 1C
 ggplot(data=tmp) + geom_violin(aes(x = set, y = prop_behav, color=set, fill=set),  alpha = 0.4) + geom_jitter(aes(x = set, y = prop_behav, color=set, size=5)) + geom_boxplot(aes(x = set, y = prop_behav), size=1.25, color="black", width=0.1, fill="white", outlier.colour = NA) + scale_y_continuous(name="grooming probability") + scale_x_discrete(labels=c("above_90"= "most anubis-like", "below_10" = "most yellow-like")) + theme_classic() + theme(legend.position = "none", legend.title = element_blank(), axis.title.x = element_blank(),text=element_text(size=28), axis.text = element_text(color="black")) + scale_color_manual(values = c("above_90" = "royalblue3", "below_10" = "royalblue3")) + scale_fill_manual(values = c("above_90" = "royalblue3", "below_10" = "royalblue3"))
-
+ggsave("fig1C.png")
 
 ####################
 # Fig. 1D
@@ -127,6 +128,7 @@ raw3$groom_prox <- raw3$yes_groom/raw3$count_groom # divide the total number of 
 
 # Plot figure 1D
 ggplot() + geom_jitter(data=groom, aes(rank_female, groom_two_month), alpha=0.05, height=0.05, color="grey70") + scale_x_continuous(name="female rank",breaks=c(1,5,10,15,20,25,30)) +  theme_classic() + theme(text=element_text(size=20), axis.text = element_text(color="black")) + geom_point(data=raw3, aes(rank_female, groom_prox), size=3, colour="royalblue3") + scale_y_continuous(name="grooming probability") + geom_line(data=tmp, aes(rank_female, probs), color="black", size=1, linetype="dashed") 
+ggsave("fig1D.png")
 
 
 #############################################################################################################################
@@ -164,6 +166,7 @@ tmp3$probs <- predict(groom_model, tmp3, type="response", re.form=NA)
 
 # Plot figure 2 central heatmap
 ggplot(tmp3, aes(x=genetic_ancestry_female, y=genetic_ancestry_male, fill=probs)) + geom_raster() + theme_classic() + scale_fill_gradientn(colours=c("blue","cyan","green", "yellow","orange", "red", "indianred4")) + scale_x_continuous(name="female genetic ancestry") + scale_y_continuous(name="male genetic ancestry") + theme(legend.position = "right", text=element_text(size=16), axis.text = element_text(color="black")) + guides(fill=guide_colorbar(ticks.colour = "black", ticks.linewidth = 1.5))
+ggsave("fig2.png")
 
 ####################
 # Fig. 2 line graps surrounding heatmap
@@ -176,16 +179,22 @@ max(tmp3$probs) # maximum grooming probability = 0.303592
 # Plot the probability of grooming behavior for yellow males (genetic ancestry = 0) as a function of the genetic ancestry of potential opposite-sex social partners (left top panel)
 tmp4 <- subset(tmp3, genetic_ancestry_male==0)
 ggplot(tmp4) + geom_line(aes(genetic_ancestry_female, probs), size=2) + theme_classic()+ theme(legend.position = "none", text=element_text(size=24), axis.text = element_text(color="black")) + scale_x_continuous(name="female genetic ancestry") + scale_y_continuous(limits=c(0.11, 0.31), name="grooming probability")
+ggsave("fig2_1.png")
+
 # Plot the probability of grooming behavior for anubis males (genetic ancestry = 1) as a function of the genetic ancestry of potential opposite-sex social partners (left bottom panel)
 tmp4 <- subset(tmp3, genetic_ancestry_male==1)
 ggplot(tmp4) + geom_line(aes(genetic_ancestry_female, probs), size=2) + theme_classic()+ theme(legend.position = "none", text=element_text(size=24), axis.text = element_text(color="black")) + scale_x_continuous(name="female genetic ancestry") + scale_y_continuous(limits=c(0.11, 0.31), name="grooming probability")
+ggsave("fig2_2.png")
 
 # Plot the probability of grooming behavior for yellow females (genetic ancestry = 0) as a function of the genetic ancestry of potential opposite-sex social partners (bottom left panel)
 tmp4 <- subset(tmp3, genetic_ancestry_female==0)
 ggplot(tmp4) + geom_line(aes(genetic_ancestry_male, probs), size=2) + theme_classic()+ theme(legend.position = "none", text=element_text(size=24), axis.text = element_text(color="black")) + scale_x_continuous(name="male genetic ancestry") + scale_y_continuous(limits=c(0.11, 0.31), name="grooming probability")
+ggsave("fig2_3.png")
+
 # Plot the probability of grooming behavior for anubis females (genetic ancestry = 1) as a function of the genetic ancestry of potential opposite-sex social partners (bottom right panel)
 tmp4 <- subset(tmp3, genetic_ancestry_female==1)
 ggplot(tmp4) + geom_line(aes(genetic_ancestry_male, probs), size=2) + theme_classic()+ theme(legend.position = "none", text=element_text(size=24), axis.text = element_text(color="black")) + scale_x_continuous(name="male genetic ancestry") + scale_y_continuous(limits=c(0.11, 0.31), name="grooming probability")
+ggsave("fig2_4.png")
 
 
 #############################################################################################################################
@@ -218,7 +227,7 @@ tmp3$probs <- predict(groom_model, tmp3, type="response", re.form=NA)
 
 # Plot figure 3 central heatmap
 ggplot(tmp3, aes(x=rank_female, y=rank_male, fill=probs)) + geom_raster() + theme_classic() + scale_fill_gradientn(colours=c("blue","cyan","green", "yellow","orange", "red", "indianred4")) + scale_x_continuous(name="female rank",  breaks=c(1,5,10,15,20,25,30)) + scale_y_continuous(name="male rank", breaks=c(1,5,10,15,20,25,30)) + theme(legend.position = "right", text=element_text(size=16), axis.text = element_text(color="black")) + guides(fill=guide_colorbar(ticks.colour = "black", ticks.linewidth = 1.5))
-
+ggsave("fig3.png")
 
 ####################
 # Fig. 3 line graps surrounding heatmap
@@ -232,16 +241,22 @@ max(tmp3$probs) # maximum grooming probability = 0.2242176
 # Plot the probability of grooming behavior for the lowest ranking males as a function of the dominance rank of potential opposite-sex social partners (left top panel)
 tmp4 <- subset(tmp3, max(rank_male)==rank_male) 
 ggplot(tmp4) + geom_line(aes(rank_female, probs), size=2) + theme_classic()+ theme(legend.position = "none", text=element_text(size=24), axis.text = element_text(color="black")) + scale_x_continuous(name="female rank", breaks=c(1,5,10,15,20,25,30)) + scale_y_continuous(limits=c(0.04, 0.23), name="grooming probability")
+ggsave("fig3_1.png")
+
 # Plot the probability of grooming behavior for the highest ranking males as a function of the dominance rank of potential opposite-sex social partners (left bottom panel)
 tmp4 <- subset(tmp3, min(rank_male)==rank_male) 
 ggplot(tmp4) + geom_line(aes(rank_female, probs), size=2) + theme_classic()+ theme(legend.position = "none", text=element_text(size=24), axis.text = element_text(color="black")) + scale_x_continuous(name="female rank", breaks=c(1,5,10,15,20,25,30)) + scale_y_continuous(limits=c(0.04, 0.23), name="grooming probability")
+ggsave("fig3_2.png")
 
 # Plot the probability of grooming behavior for the lowest ranking females as a function of the dominance rank of potential opposite-sex social partners (bottom left panel)
 tmp4 <- subset(tmp3, max(rank_female)==rank_female)
 ggplot(tmp4) + geom_line(aes(rank_male, probs), size=2) + theme_classic()+ theme(legend.position = "none", text=element_text(size=24), axis.text = element_text(color="black")) + scale_x_continuous(name="male rank", breaks=c(1,5,10,15,20)) + scale_y_continuous(limits=c(0.04, 0.23), name="grooming probability")
+ggsave("fig3_3.png")
+
 # Plot the probability of grooming behavior for the highest ranking females as a function of the dominance rank of potential opposite-sex social partners (bottom right panel)
 tmp4 <- subset(tmp3, min(rank_female)==rank_female)
 ggplot(tmp4) + geom_line(aes(rank_male, probs), size=2) + theme_classic()+ theme(legend.position = "none", text=element_text(size=24), axis.text = element_text(color="black")) + scale_x_continuous(name="male rank", breaks=c(1,5,10,15,20)) + scale_y_continuous(limits=c(0.04, 0.23), name="grooming probability")
+ggsave("fig3_4.png")
 
 
 #############################################################################################################################
@@ -249,6 +264,7 @@ ggplot(tmp4) + geom_line(aes(rank_male, probs), size=2) + theme_classic()+ theme
 #############################################################################################################################
 # Plot figure S1
 ggplot(s1) + geom_point(alpha=0.5, size=2.5, aes(x=females_in_group, y=total_adult_female_point_samples_in_month, colour=as.factor(group_id))) + scale_x_continuous(name="adult females in social group") + scale_y_continuous(name="total adult female point samples\n per month per social group") + theme_classic() +  theme(axis.title=element_text(size=16), axis.text=element_text(size=16), legend.position = "none", text = element_text(color="black"))
+ggsave("figS1.png")
 
 
 #############################################################################################################################
@@ -277,6 +293,7 @@ tmp <- rbind(abovemed_3, belowmed_3)  # combine males living in groups with grea
 
 # Plot figure S5A
 ggplot(data=tmp) + geom_jitter(aes(x = set, y = prop_behav, color=set, size=5), alpha=0.8) + geom_violin(aes(x = set, y = prop_behav, color=set, fill=set),  alpha = 0.4) + geom_boxplot(aes(x = set, y = prop_behav), size=1.25, color="black", width=0.1, fill="white", outlier.colour = NA) + scale_y_continuous(name="proportion of grooming occurrences\nout of all potential grooming opportunities")  + scale_x_discrete(labels=c("above_median"= "above median", "below_median" = "below median")) + theme_classic() + theme(legend.position = "none", legend.title = element_blank(), axis.title.x = element_blank(),text=element_text(size=30), axis.text = element_text(color="black")) + scale_color_manual(values = c("above_median" = "turquoise4", "below_median" = "turquoise4")) + scale_fill_manual(values = c("above_median" = "turquoise4", "below_median" = "turquoise4"))
+ggsave("figS5A.png")
 
 
 ####################
@@ -301,6 +318,7 @@ tmp <- rbind(abovemed_3, belowmed_3) # combine females living in groups with gre
 
 # Plot figure S5B
 ggplot(data=tmp) + geom_jitter(aes(x = set, y = prop_behav, color=set, size=5), alpha=0.8) + geom_violin(aes(x = set, y = prop_behav, color=set, fill=set),  alpha = 0.4) + geom_boxplot(aes(x = set, y = prop_behav), size=1.25, color="black", width=0.1, fill="white", outlier.colour = NA) + scale_y_continuous(name="proportion of grooming occurrences\nout of all potential grooming opportunities")  + scale_x_discrete(labels=c("above_median"= "above median", "below_median" = "below median")) + theme_classic() + theme(legend.position = "none", legend.title = element_blank(), axis.title.x = element_blank(),text=element_text(size=30), axis.text = element_text(color="black")) + scale_color_manual(values = c("above_median" = "royalblue3", "below_median" = "royalblue3")) + scale_fill_manual(values = c("above_median" = "royalblue3", "below_median" = "royalblue3"))
+ggsave("figS5B.png")
 
 
 #############################################################################################################################
@@ -329,6 +347,8 @@ tmp <- rbind(abovemed_3, belowmed_3) # combine males living in groups with great
 
 # Plot figure S6A
 ggplot(data=tmp) + geom_jitter(aes(x = set, y = prop_behav, color=set, size=5), alpha=0.8) + geom_violin(aes(x = set, y = prop_behav, color=set, fill=set),  alpha = 0.4) + geom_boxplot(aes(x = set, y = prop_behav), size=1.25, color="black", width=0.1, fill="white", outlier.colour = NA) + scale_y_continuous(name="proportion of grooming occurrences\nout of all potential grooming opportunities")  + scale_x_discrete(labels=c("above_median"= "above median", "below_median" = "below median")) + theme_classic() + theme(legend.position = "none", legend.title = element_blank(), axis.title.x = element_blank(),text=element_text(size=30), axis.text = element_text(color="black")) + scale_color_manual(values = c("above_median" = "turquoise4", "below_median" = "turquoise4")) + scale_fill_manual(values = c("above_median" = "turquoise4", "below_median" = "turquoise4"))
+ggsave("figS6A.png")
+
 
 ####################
 # Fig. S6B
@@ -352,3 +372,4 @@ tmp <- rbind(abovemed_3, belowmed_3)# combine females living in groups with grea
 
 # Plot figure S6B
 ggplot(data=tmp) + geom_jitter(aes(x = set, y = prop_behav, color=set, size=5), alpha=0.8) + geom_violin(aes(x = set, y = prop_behav, color=set, fill=set),  alpha = 0.4) + geom_boxplot(aes(x = set, y = prop_behav), size=1.25, color="black", width=0.1, fill="white", outlier.colour = NA) + scale_y_continuous(name="proportion of grooming occurrences\nout of all potential grooming opportunities")  + scale_x_discrete(labels=c("above_median"= "above median", "below_median" = "below median")) + theme_classic() + theme(legend.position = "none", legend.title = element_blank(), axis.title.x = element_blank(),text=element_text(size=30), axis.text = element_text(color="black")) + scale_color_manual(values = c("above_median" = "royalblue3", "below_median" = "royalblue3")) + scale_fill_manual(values = c("above_median" = "royalblue3", "below_median" = "royalblue3"))
+ggsave("figS6B.png")
