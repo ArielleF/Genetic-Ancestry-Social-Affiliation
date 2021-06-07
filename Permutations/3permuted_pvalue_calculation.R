@@ -6,6 +6,10 @@
 permuted_results_groom <- read.table("all.groom_permuted_results.txt", header=F)
 permuted_results_prox <- read.table("all.prox_permuted_results.txt", header=F)
 
+# Load R libraries
+library(dplyr)
+library(glmmTMB)
+
 # set the number of total permutations run
 totalperm=1000
 # this should equal the number of rows in permuted_results_groom and permuted_results_prox
