@@ -7,7 +7,7 @@ permuted_results_groom <- read.table("all.groom_permuted_results.txt", header=F)
 permuted_results_prox <- read.table("all.prox_permuted_results.txt", header=F)
 
 # Load R libraries
-library(dplyr)
+library(ggplot2)
 library(glmmTMB)
 
 # set the number of total permutations run
