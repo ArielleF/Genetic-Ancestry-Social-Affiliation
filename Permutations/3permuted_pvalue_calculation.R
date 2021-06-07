@@ -45,9 +45,11 @@ colnames(groom_results_final)[2] <- c("beta")
 groom_results_final$beta <- as.numeric(as.character(groom_results_final$beta))
 groom_results_final$pval_groom <- as.numeric(as.character(groom_results_final$pval_groom))
 
-# let's plot both the effect estimates and the negative log10 permuted p-values for the proximity model
+# let's plot both the effect estimates and the negative log10 permuted p-values for the grooming model
 ggplot(data=groom_results_final) + geom_point(aes(variable, beta), size=3) + theme_classic() + theme(axis.text.x = element_text(angle=90)) # plot effect estimates
+ggsave("groomEffectEstimates.png")
 ggplot(data=groom_results_final) + geom_point(aes(variable, -log10(pval_groom)), size=3) + theme_classic() + theme(axis.text.x = element_text(angle=90)) # plot permuted p-values; -log10 of pvalues = 0 is undefined so predictor variables with these p-values will be shown cutoff at the very top of the plot
+ggsave("groomPvalEstimates_fromperm.png")
 
 
 #############################################################################################################################
@@ -69,9 +71,14 @@ prox_results_final$pval_prox <- as.numeric(as.character(prox_results_final$pval_
 
 # let's plot both the effect estimates and the negative log10 permuted p-values for the proximity model
 ggplot(data=prox_results_final) + geom_point(aes(variable, beta), size=3) + theme_classic() + theme(axis.text.x = element_text(angle=90)) # plot effect estimates
+ggsave("proxEffectEstimates.png")
 ggplot(data=prox_results_final) + geom_point(aes(variable, -log10(pval_prox)), size=3) + theme_classic() + theme(axis.text.x = element_text(angle=90)) # plot permuted p-values; -log10 of pvalues = 0 is undefined so predictor variables with these p-values will be shown cutoff at the very top of the plot
+ggsave("proxPvalEstimates_fromperm.png")
 
 # we can also plot the effect estimates of the predictor variables from both the grooming and proximity models in the same plot
 ggplot() + geom_point(data=prox_results_final, aes(variable, beta), color="forestgreen", alpha=0.7, size=3) + geom_point(data=groom_results_final, aes(variable, beta), color="orange", alpha=0.8, size=3) + theme_classic() + theme(axis.text.x = element_text(angle=90))
+ggsave("groom_and_prox_effectEstimates.png")
+
 # we can also plot the effect estimates of the predictor variables with permuted p-values less than 0.05 from both the grooming and proximity models in the same plot
 ggplot() + theme_classic() + theme(axis.text.x = element_text(angle=90)) + geom_point(data=subset(groom_results_final, pval_groom<0.05), aes(variable, beta), color="orange", alpha=0.8, size=3) + geom_point(data=subset(prox_results_final, pval_prox<0.05), aes(variable, beta), color="forestgreen", alpha=0.7, size=3)
+ggsave("groom_and_prox_sigEstimates_fromperm.png")
