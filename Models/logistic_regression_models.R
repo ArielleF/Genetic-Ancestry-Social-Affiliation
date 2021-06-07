@@ -2,7 +2,7 @@
 
 # Scripts for running the multivariate logistic regression models predicting grooming and proximity behavior
 
-# Load the grooming and proximity data sets available at XXX
+# Load the grooming and proximity data sets available at https://doi.org/10.7924/r4kp82d1z
 groom <- read.csv("groom_anonymized.csv", header=T) 
 prox <- read.csv("prox_anonymized.csv", header=T) 
 
