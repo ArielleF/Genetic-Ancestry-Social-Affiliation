@@ -3,10 +3,10 @@
 # Script for preparing for permutations to assess statistical significance of predictor variables in the multivariate logistic regression models predicting grooming and proximity behavior
 # This script computes, for each female-two month interval combination, the proportion of dyads where an event (grooming or proximity) occurred. These values are estimates of the probability of grooming or proximity with any male, per female-interval combination.
 
-# Load the grooming data set available at XXX
+# Load the grooming data set available at https://doi.org/10.7924/r4kp82d1z
 groom <- read.csv("groom_anonymized.csv", header=T) 
 
-# Load the proximity data set available at XXX
+# Load the proximity data set available at https://doi.org/10.7924/r4kp82d1z
 prox <- read.csv("prox_anonymized.csv", header=T) 
 
 # Load R libraries
