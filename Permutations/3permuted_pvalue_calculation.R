@@ -51,6 +51,8 @@ ggsave("groomEffectEstimates.png")
 ggplot(data=groom_results_final) + geom_point(aes(variable, -log10(pval_groom)), size=3) + theme_classic() + theme(axis.text.x = element_text(angle=90)) # plot permuted p-values; -log10 of pvalues = 0 is undefined so predictor variables with these p-values will be shown cutoff at the very top of the plot
 ggsave("groomPvalEstimates_fromperm.png")
 
+# save our effect estimates and permuted p-value results to a csv file
+write.csv(groom_results_final, "groom_results_final.csv", row.names=F)
 
 #############################################################################################################################
 # Permutation based p-values for proximity model.
@@ -74,6 +76,13 @@ ggplot(data=prox_results_final) + geom_point(aes(variable, beta), size=3) + them
 ggsave("proxEffectEstimates.png")
 ggplot(data=prox_results_final) + geom_point(aes(variable, -log10(pval_prox)), size=3) + theme_classic() + theme(axis.text.x = element_text(angle=90)) # plot permuted p-values; -log10 of pvalues = 0 is undefined so predictor variables with these p-values will be shown cutoff at the very top of the plot
 ggsave("proxPvalEstimates_fromperm.png")
+
+# save our effect estimates and permuted p-value results to a csv file
+write.csv(prox_results_final, "prox_results_final.csv", row.names=F)
+
+#############################################################################################################################
+# Compare results from the grooming and proximity models.
+#############################################################################################################################
 
 # we can also plot the effect estimates of the predictor variables from both the grooming and proximity models in the same plot
 ggplot() + geom_point(data=prox_results_final, aes(variable, beta), color="forestgreen", alpha=0.7, size=3) + geom_point(data=groom_results_final, aes(variable, beta), color="orange", alpha=0.8, size=3) + theme_classic() + theme(axis.text.x = element_text(angle=90))
