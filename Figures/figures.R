@@ -15,6 +15,7 @@ s1 <- read.csv("unique_social_group_months_FigS1.csv", header=T)
 # Load R libraries
 library(ggplot2)
 library(glmmTMB)
+library(dplyr)
 
 # Need to run original grooming logistic regression model for some of the figure making
 # Grooming model (see script in Models directory)
