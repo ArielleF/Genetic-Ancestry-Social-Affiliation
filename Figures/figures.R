@@ -2,13 +2,13 @@
 
 # Scripts for producing Figures 1-3, S1, and S5-6
 # The scripts for Figures S2-S4, S5c-d, S6c-d are not included here as they are identical to the scripts for Figures 1-3 and S5-S6 except:
-# (1) the dataset (groom) is replaced by the proximity data set (also availble at XXX) and
+# (1) the dataset (groom) is replaced by the proximity data set (also availble at https://doi.org/10.7924/r4kp82d1z) and
 # (2) the model used for predictions is the proximity logistic regression model
 
-# Load the grooming data set available at XXX
+# Load the grooming data set available at https://doi.org/10.7924/r4kp82d1z
 groom <- read.csv("groom_anonymized.csv", header=T) # for Figures S2-4, load the proximity data set (prox_anonymized.csv) instead
 
-# Load the data set for producing Figure S1 available at XXX
+# Load the data set for producing Figure S1 available at https://doi.org/10.7924/r4kp82d1z
 # This data set is from the initial, monthly-based data set and contains all unique social group-month combinations
 s1 <- read.csv("unique_social_group_months_FigS1.csv", header=T)
 
