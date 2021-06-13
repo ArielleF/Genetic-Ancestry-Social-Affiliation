@@ -1,6 +1,6 @@
 #!/usr/bin/env Rscript
 
-# Scripts for calculating the assortative genetic ancestry index, heterozygosity, relatedness and female transformed age included as predictor variables in the multivariate logistic regression models predicting grooming and proximity behavior
+# Scripts for calculating the assortative genetic ancestry index, heterozygosity, relatedness, and female transformed age included as predictor variables in the multivariate logistic regression models predicting grooming and proximity behavior
 
 # Load the grooming data set available at https://doi.org/10.7924/r4kp82d1z (calcuations are the same for the proximity data set so they are not included here)
 groom <- read.csv("groom_anonymized.csv", header=T) 
