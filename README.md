@@ -1,5 +1,5 @@
 ![Amboseli baboons grooming](https://user-images.githubusercontent.com/21341857/119717025-cbfe9200-be33-11eb-9e98-f440921a557e.png)
-<sup>*A male and female baboon in the Amboseli basin of southern Kenyna grooming (left) and in proximity (right). Photographs by Arielle Fogel*</sup>
+<sup>*A male and female baboon in the Amboseli basin of southern Kenya grooming (left) and in proximity (right). Photographs by Arielle Fogel*</sup>
 
 # Genetic ancestry predicts male-female affiliation in a natural baboon hybrid zone (Fogel et al. 2021, *Animal Behaviour*)
 
