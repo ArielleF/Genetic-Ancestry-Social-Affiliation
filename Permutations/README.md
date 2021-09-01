@@ -16,9 +16,9 @@ Concatenate the output of the 50 jobs per array (20 permutations per job) into a
 `cat groom_permuted_results_*.txt >> all.groom_permuted_results.txt`
 `cat prox_permuted_results_*.txt >> all.prox_permuted_results.txt`
 
-Delete individual files for each job in the array as these results are now stored in either the `all.groom_permuted_results.txt or all.prox_permuted_results.txt files generated above`
-`rm groom_permuted_results_*`
-`rm prox_permuted_results_*`
+Delete individual files for each job in the array as these results are now stored in either the `all.groom_permuted_results.txt` or `all.prox_permuted_results.txt` files generated above
+`rm groom_permuted_results_*
+rm prox_permuted_results_*`
 
 Check that each dataframe with all of the permutation results has 1,000 lines corresponding to the 1,000 permutations run
 `wc -l all.*
