@@ -50,7 +50,7 @@ groom_results_final$pval_groom <- as.numeric(as.character(groom_results_final$pv
 # let's plot both the effect estimates and the negative log10 permuted p-values for the grooming model
 ggplot(data=groom_results_final) + geom_point(aes(variable, beta), size=3) + theme_classic() + theme(axis.text.x = element_text(angle=90)) # plot effect estimates
 ggsave("groomEffectEstimates.png")
-ggplot(data=groom_results_final) + geom_point(aes(variable, -log10(pval_groom)), size=3) + theme_classic() + theme(axis.text.x = element_text(angle=90)) # plot permuted p-values; -log10 of pvalues = 0 is undefined so predictor variables with these p-values will be shown cutoff at the very top of the plot
+ggplot(data=groom_results_final) + geom_point(aes(variable, -log10(pval_groom)), size=3) + theme_classic() + theme(axis.text.x = element_text(angle=90)) # plot permuted p-values; -log10 of p-values = 0 is undefined so predictor variables with these p-values will be shown cutoff at the very top of the plot
 ggsave("groomPvalEstimates_fromperm.png")
 
 # save our effect estimates and permuted p-value results to a csv file
@@ -76,7 +76,7 @@ prox_results_final$pval_prox <- as.numeric(as.character(prox_results_final$pval_
 # let's plot both the effect estimates and the negative log10 permuted p-values for the proximity model
 ggplot(data=prox_results_final) + geom_point(aes(variable, beta), size=3) + theme_classic() + theme(axis.text.x = element_text(angle=90)) # plot effect estimates
 ggsave("proxEffectEstimates.png")
-ggplot(data=prox_results_final) + geom_point(aes(variable, -log10(pval_prox)), size=3) + theme_classic() + theme(axis.text.x = element_text(angle=90)) # plot permuted p-values; -log10 of pvalues = 0 is undefined so predictor variables with these p-values will be shown cutoff at the very top of the plot
+ggplot(data=prox_results_final) + geom_point(aes(variable, -log10(pval_prox)), size=3) + theme_classic() + theme(axis.text.x = element_text(angle=90)) # plot permuted p-values; -log10 of p-values = 0 is undefined so predictor variables with these p-values will be shown cutoff at the very top of the plot
 ggsave("proxPvalEstimates_fromperm.png")
 
 # save our effect estimates and permuted p-value results to a csv file
