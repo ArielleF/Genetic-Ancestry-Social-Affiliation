@@ -4,7 +4,7 @@ Note that because the p-values reported in the manuscript were based on permutat
 In R, run the script `1prepare_for_permutations.R` which computes, for each female-two-month interval combination, the proportion of dyads where an event (grooming or proximity) occurred (these values are estimates of the probability of grooming or proximity with any male, per female-interval combination). This script generates two R data files (`groom_perm.Rd` and `prox_perm.Rd`) which can then be uploaded to a computing cluster for parallelization of permutations.
 
 In a directory on a computing cluster containing both R data files, run the scripts `2agroom_perm.R` and `2bprox_perm.R` as arrays (see below) which will:
-1. randomly permute the grooming/proximity probabilities computed in 1prepare_for_permutations.R across all female two-month intervals,
+1. randomly permute the grooming/proximity probabilities computed in `1prepare_for_permutations.R` across all female two-month intervals,
 2. randomly assign 0/1 by drawing from a binomial distribution with probability equal to the permuted grooming/proximity probability for each female two-month interval and,
 3. fit the same grooming/proximity model used to analyze the real data but using the new, permutation-based outcome variable.
 
