@@ -27,7 +27,7 @@ rm groom_permuted_results_*
 rm prox_permuted_results_*
 ```
 
-Check that each model's dataframe, which includes all of the permutation results per model, has 1,000 lines corresponding to the 1,000 permutations.
+Check that each model's file, which includes all of the permutation results per model, has 1,000 lines corresponding to the 1,000 permutations.
 ```console
 wc -l all.*
 #1000 all.groom_permuted_results.txt
