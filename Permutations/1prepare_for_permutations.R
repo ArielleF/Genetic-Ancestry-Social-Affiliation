@@ -32,7 +32,7 @@ prox_null_2$prox_prob <- prox_null_2$prox_count/prox_null_2$count # divide the t
 #   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 # 0.05263 0.12500 0.22222 0.27974 0.36842 1.00000 
 
-# create dataframe with one row per female-interval combination and its associated grooming/proximity probabilty
+# create dataframe with one row per female-interval combination and its associated grooming/proximity probability
 groom_null_unique_prob <- unique(groom_null_2[c("female_interval_id","groom_prob")])
 nrow(groom_null_unique_prob) # 1866 - number of female two-month intervals in the grooming data set
 prox_null_unique_prob <- unique(prox_null_2[c("female_interval_id","prox_prob")])
