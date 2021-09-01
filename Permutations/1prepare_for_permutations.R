@@ -25,7 +25,7 @@ groom_null_2$groom_prob <- groom_null_2$groom_count/groom_null_2$count # divide 
 # 0.0500  0.1000  0.1429  0.1780  0.2222  1.0000 
 
 prox_null_1 <- prox %>% group_by(female_interval_id) %>% mutate(count=dplyr::n()) # count the total number of proximity opportunities in a given female_interval_id (i.e., all potential males that could be in proximity in a female's given social group in a given two month interval) and put in new column titled "count"
-prox_null_2 <- prox_null_1 %>% group_by(female_interval_id) %>% mutate(prox_count=sum(prox_two_month)) # count the total number of proximity occurrences (i.e., 1 for proximity_two_month) in a given female_interval_id and put in new column titled "prox_count"
+prox_null_2 <- prox_null_1 %>% group_by(female_interval_id) %>% mutate(prox_count=sum(prox_two_month)) # count the total number of proximity occurrences (i.e., 1 for prox_two_month) in a given female_interval_id and put in new column titled "prox_count"
 prox_null_2$prox_prob <- prox_null_2$prox_count/prox_null_2$count # divide the total number of proximity occurrences by the total number of proximity opportunities to get the probability of being in proximity for a given female_interval_id and put in a new column titled "prox_prob"
 
 # summary(prox_null_2$prox_prob)
@@ -38,6 +38,6 @@ nrow(groom_null_unique_prob) # 1866 - number of female two-month intervals in th
 prox_null_unique_prob <- unique(prox_null_2[c("female_interval_id","prox_prob")])
 nrow(prox_null_unique_prob) # 2338 - number of female two-month intervals in the proximity data set
 
-# save dataframes for upload to the computing cluster for parallelization of permutations
+# save dataframes for uploading to a computing cluster for parallelization of permutations
 save(groom_null_unique_prob,groom_null_2,file="groom_perm.Rd")
 save(prox_null_unique_prob,prox_null_2,file="prox_perm.Rd")
