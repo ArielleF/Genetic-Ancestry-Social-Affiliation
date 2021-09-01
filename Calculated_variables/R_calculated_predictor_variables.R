@@ -16,7 +16,7 @@ library(dplyr)
 # Assortative genetic ancestry index
 #############################################################################################################################
 
-# Calculate a pairwise assortative genetic ancestry index as a function of the genetic ancestry estimates of the female and male, paralleling the approach used in Tung et al. (2012)’s pairwise assortative mating index (Tung et al. 2012 - https://doi.org/10.1086/665993)
+# Calculate a pairwise assortative genetic ancestry index as a function of the genetic ancestry estimates of the female and male, paralleling the approach used in Tung et al. (2012)’s pairwise assortative mating index (Tung et al. 2012 Am Nat - https://doi.org/10.1086/665993)
 # See equation in methods
 
 # multiply male genetic ancestry by female genetic ancestry and put results in new column called "assortative_1" which assigns a high value for assortatively affiliating male-female pairs for which both individuals have high genetic ancestry scores (i.e., both anubis-like individuals)
@@ -31,11 +31,12 @@ groom$assortative_genetic_ancestry_index2 <- apply(groom[, (ncol(groom)-1):ncol(
 # assortative_genetic_ancestry_index2 should equal the assortative_genetic_ancestry_index column in the groom dataframe
 sum(groom$assortative_genetic_ancestry_index2==groom$assortative_genetic_ancestry_index)==nrow(groom) # TRUE - these columns match!
 
+
 #############################################################################################################################
 # Heterozygosity
 #############################################################################################################################
 
-# Calculate each individual's genetic diversity by dividing the number of heterozygous loci by the number of genotyped loci for each individual (following Charpentier et al. 2008 - https://doi.org/10.1111/j.1365-294X.2008.03724.x).
+# Calculate each individual's genetic diversity by dividing the number of heterozygous loci by the number of genotyped loci for each individual (following Charpentier et al. 2008 Mol Ecol - https://doi.org/10.1111/j.1365-294X.2008.03724.x).
 
 ids <- as.data.frame(geno[c(1)]) # get the individual ids
 
@@ -43,12 +44,12 @@ ids <- as.data.frame(geno[c(1)]) # get the individual ids
 for (i in 0:13) { # for each locus (n=14)
   
   geno2 <- geno[,((i*2)+2):((i*2)+3)] # grab both columns per locus
-  geno2[,3] <- ifelse((geno2[,1]==geno2[,2] & !is.na(geno2[,1])), "HOM", ifelse((is.na(geno2[,1]) | is.na(geno2[,2])), NA, "HET")) # assign "HOM" (i.e., homozygous) if the same value in both columns (excluding NA values), assign "HET" (i.e., heterozygous) if different values in both columns (excluding NA values)
+  geno2[,3] <- ifelse((geno2[,1]==geno2[,2] & !is.na(geno2[,1])), "HOM", ifelse((is.na(geno2[,1]) | is.na(geno2[,2])), NA, "HET")) # assign "HOM" (i.e., homozygous) if the same value is in both columns (excluding NA values), assign "NA" if either of the two columns is NA, assign "HET" (i.e., heterozygous) if there are different values in both columns (excluding NA values)
   
   colnames(geno2)[3] <- paste(colnames(geno2)[1], colnames(geno2)[2], sep="_") # assign locus as column name for column with HOM/HET/NA status
   
   if (i==0) {cbind(ids, geno2[c(3)]) -> gen_div} # if this is the first locus, combine the HOM/HET/NA status column with the ids and make new dataframe called gen_div
-  if (i>0) {cbind(gen_div, geno2[c(3)]) -> gen_div} # if this not the first locus, combine the HOM/HET/NA status column with the gen_div dataframe
+  if (i>0) {cbind(gen_div, geno2[c(3)]) -> gen_div} # if this is not the first locus, combine the HOM/HET/NA status column with the gen_div dataframe
   
   print(i) # output locus number you are evaluating to track progress
   
@@ -69,10 +70,10 @@ for (i in 1:nrow(gen_div)) { # for each row (i.e., each individual)
   print(i) # output row number you are evaluating to track progress
 }
 
-# check that for alls rows (i.e., all individuals) in the datafrae, the number of heterozygous loci + the number of homozygous loci equal the number of loci genotyped (they should!)
+# check that for all rows (i.e., all individuals) in the dataframe, the number of heterozygous loci + the number of homozygous loci equal the number of loci genotyped (they should!)
 sum(gen_div$HET_loci+gen_div$HOM_loci==gen_div$loci_genotyped)==nrow(gen_div) # TRUE!
 
-# calculate the proportion of genotyped loci that were heterozygous (i.e. HET_loci divided by loci_genotyped) and put in new column called heterozygosity
+# calculate the proportion of genotyped loci that were heterozygous (i.e., HET_loci divided by loci_genotyped) and put in new column called heterozygosity
 gen_div$heterozygosity <- gen_div$HET_loci/gen_div$loci_genotyped
 
 # merge with groom data set to check that what we calculated here is equal to the heterozygosity estimates in the groom dataframe
@@ -94,10 +95,10 @@ sum(tmp2$heterozyosity_male2==tmp2$heterozyosity_male)==nrow(tmp2) # TRUE - thes
 # Relatedness
 #############################################################################################################################
 
-# Estimate genetic relatedness for each male-female dyad using the method of Queller-Goodnight (Queller & Goodnight 1989 - https://doi.org/10.2307/2409206)
-# To do this, we will:
-# 1. use the same genotype data used for estimating heterozygosity
-# 2. using the function coancestry with the estimator “quellergt” in the R package related (Pew et al. 2015 - https://doi.org/10.1111/1755-0998.12323; Wang 2011 - https://doi.org/10.1111/j.1755-0998.2010.02885.x)
+# Estimate genetic relatedness for each male-female dyad using the method of Queller-Goodnight (Queller & Goodnight 1989 Evol - https://doi.org/10.2307/2409206)
+# To do this, we will use:
+# 1. the same genotype data used for estimating heterozygosity
+# 2. the function coancestry with the estimator “quellergt” from the R package related (Pew et al. 2015 Mol Ecol Res - https://doi.org/10.1111/1755-0998.12323; Wang 2011 Mol Ecol Res - https://doi.org/10.1111/j.1755-0998.2010.02885.x)
 library(related) # if you have never installed this package before, this package is not on the CRAN website so follow specific instructions for installation here: https://timothyfrasier.github.io/files/Tutorial.pdf
 
 geno_QG <- geno
@@ -128,7 +129,7 @@ sum(tmp2$quellergt==tmp2$genetic_relatedness)==nrow(tmp2) # TRUE - these columns
 # Female transformed age
 #############################################################################################################################
 
-# Calculate a transformed measure of female age (following Tung et al. 2012) that reflects the relationship between female age and conception probability in the Amboseli baboon population where the highest conception probability occurs at ~14 years of age (Beehner et al. 2006 - https://doi.org/10.1093/beheco/arl006)
+# Calculate a transformed measure of female age (following Tung et al. 2012 Am Nat) that reflects the relationship between female age and conception probability in the Amboseli baboon population where the highest conception probability occurs at ~14 years of age (Beehner et al. 2006 Behav Ecol - https://doi.org/10.1093/beheco/arl006)
 # See equation in methods
 
 # calculate female transformed age as a function of the untransformed female age (transformed female age is given 0 at an untransformed female age of 14; transformed female age becomes more negative with deviations from untransformed female age of 14) and put results in new column called female_transformed_age2
