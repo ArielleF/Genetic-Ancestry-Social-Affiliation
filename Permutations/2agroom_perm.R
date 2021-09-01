@@ -13,7 +13,7 @@ clusterExport(clus,varlist=c("groom_null_unique_prob","groom_null_2"),envir=envi
 nperm=20 # run 20 permutations per job in the array (and we'll run 50 arrays so in total = 50 * 20 = 1000 permutations)
 
 permuted_results=Reduce(rbind,parLapply(clus,1:nperm,function(perm){
-  library(glmmTMB, lib.loc="/data/tunglab/asf40/programs/Rlibs/")
+  library(glmmTMB, lib.loc="Rlibs/") # location of installed glmmTMB library (here, it is installed in the folder Rlibs)
   groom_null_unique_prob$groom_prob_perm <- sample(groom_null_unique_prob$groom_prob,1866,replace=F) # randomly permute grooming probabilities across all female two-month intervals; note that 1866 is the number of unique female two-month intervals in the grooming data set
   groom_null_perm <- merge(groom_null_2,groom_null_unique_prob,by="female_interval_id")
   groom_null_perm$groom_two_month_perm=NA # this is where we will put the new, permutation-based outcome variable
