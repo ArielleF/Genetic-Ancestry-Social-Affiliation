@@ -2,7 +2,7 @@
 
 # Scripts for producing Figures 1-3, A1, and A5-6
 # The scripts for Figures A2-A4, A5c-d, A6c-d are not included here as they are identical to the scripts for Figures 1-3 and A5-S6 except:
-# (1) the dataset (groom) is replaced by the proximity data set (also availble at https://doi.org/10.7924/r4kp82d1z) and
+# (1) the dataset (groom) is replaced by the proximity data set (also available at https://doi.org/10.7924/r4kp82d1z) and
 # (2) the model used for predictions is the proximity logistic regression model
 
 # Load the grooming data set available at https://doi.org/10.7924/r4kp82d1z
@@ -142,7 +142,7 @@ ggsave("fig1D.png")
 # Note that we exclude female genetic ancestry, male genetic ancestry, and the assortative genetic ancestry index (and female id and male id are coded as NA)
 tmp <- data.frame(females_in_group=mean(groom$females_in_group), males_in_group=mean(groom$males_in_group), rank_female=mean(groom$rank_female), rank_male=mean(groom$rank_male),  heterozygosity_male=mean(groom$heterozygosity_male), heterozygosity_female=mean(groom$heterozygosity_female), genetic_relatedness=mean(groom$genetic_relatedness), observer_effort=mean(groom$observer_effort), female_age=mean(groom$female_age), female_age_transformed=mean(groom$female_age_transformed), reproductive_state=1, pair_coresidency=mean(groom$pair_coresidency))
 
-# Get all possible female genetic ancestry and male genetic ancestry values (these values can range continuously from 0 to 1 where where 0 corresponds to unadmixed yellow baboon ancestry and 1 corresponds to unadmixed anubis baboon ancestry)
+# Get all possible female genetic ancestry and male genetic ancestry values (these values can range continuously from 0 to 1 where 0 corresponds to unadmixed yellow baboon ancestry and 1 corresponds to unadmixed anubis baboon ancestry)
 f_genetic <- as.vector(seq(0,1, by=0.001))
 m_genetic <- as.vector(seq(0,1, by=0.001))
 
