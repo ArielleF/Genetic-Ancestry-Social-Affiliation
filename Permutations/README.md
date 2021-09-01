@@ -9,7 +9,7 @@ In a directory on a computing cluster containing both R data files, run the scri
 3. fit the same grooming/proximity model used to analyze the real data but using the new, permutation-based outcome variable.
 
 Run 50 jobs per array (since each job is currently set to run 20 permutations which can be changed by setting _nperm_ to a value other than 20 in `groom_perm.R` and `prox_perm.R`) because we want to run 1,000 permutations per model in total (50 jobs * 20 permutations/job = 1,000 permutations total).
-`module load R` before running these scripts since the `groom_perm.R` and `prox_perm.R` scripts are set up to load our current environment:
+`module load R` before running these scripts since the `groom_perm.R` and `prox_perm.R` are set up to load our current environment:
 ```console
 sbatch --mem=100 --cpus-per-task=20 --array=1-50%5 2agroom_perm.R
 sbatch --mem=100 --cpus-per-task=20 --array=1-50%5 2bprox_perm.R
