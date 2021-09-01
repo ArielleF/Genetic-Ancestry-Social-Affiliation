@@ -1,14 +1,14 @@
 #!/usr/bin/env Rscript
 
-# Scripts for producing Figures 1-3, S1, and S5-6
-# The scripts for Figures S2-S4, S5c-d, S6c-d are not included here as they are identical to the scripts for Figures 1-3 and S5-S6 except:
+# Scripts for producing Figures 1-3, A1, and A5-6
+# The scripts for Figures A2-A4, A5c-d, A6c-d are not included here as they are identical to the scripts for Figures 1-3 and A5-S6 except:
 # (1) the dataset (groom) is replaced by the proximity data set (also availble at https://doi.org/10.7924/r4kp82d1z) and
 # (2) the model used for predictions is the proximity logistic regression model
 
 # Load the grooming data set available at https://doi.org/10.7924/r4kp82d1z
-groom <- read.csv("groom_anonymized.csv", header=T) # for Figures S2-4, load the proximity data set (prox_anonymized.csv) instead
+groom <- read.csv("groom_anonymized.csv", header=T) # for Figures A2-A4, load the proximity data set (prox_anonymized.csv) instead
 
-# Load the data set for producing Figure S1 available at https://doi.org/10.7924/r4kp82d1z
+# Load the data set for producing Figure A1 available at https://doi.org/10.7924/r4kp82d1z
 # This data set is from the initial, monthly-based data set and contains all unique social group-month combinations
 s1 <- read.csv("unique_social_group_months_FigS1.csv", header=T)
 
@@ -19,7 +19,7 @@ library(dplyr)
 
 # Need to run original grooming logistic regression model for some of the figure making
 # Grooming model (see script in Models directory)
-groom_model <- glmmTMB(groom_two_month ~ assortative_genetic_ancestry_index + heterozygosity_female + heterozygosity_male + genetic_relatedness + rank_female*rank_male + female_age + female_age_transformed + females_in_group + males_in_group + reproductive_state*genetic_ancestry_female + reproductive_state*genetic_ancestry_male + pair_coresidency + observer_effort + (1 | female_id) + (1 | male_id), data=groom, family="binomial") # for Figures S2-4, run the proximity logistic regression model instead (see script in Models directory)
+groom_model <- glmmTMB(groom_two_month ~ assortative_genetic_ancestry_index + heterozygosity_female + heterozygosity_male + genetic_relatedness + rank_female*rank_male + female_age + female_age_transformed + females_in_group + males_in_group + reproductive_state*genetic_ancestry_female + reproductive_state*genetic_ancestry_male + pair_coresidency + observer_effort + (1 | female_id) + (1 | male_id), data=groom, family="binomial") # for Figures A2-A4, run the proximity logistic regression model instead (see script in Models directory)
 
 set.seed(1234) # so figures with any jittering are reproducible - will not completely match the published figures because although this set.seed was used to generate the paper's figures, the figures were produced in a different order below (order below reflects order of figures in the paper)
 
@@ -32,7 +32,7 @@ set.seed(1234) # so figures with any jittering are reproducible - will not compl
 # Fig. 1A
 ####################
 # Calculate the probability of grooming among co-resident opposite-sex pairs per two-month interval, for the most anubis-like males (above the 90th percentile for male genetic ancestry in the data set) and the most yellow-like males (below the 10th percentile for male genetic ancestry in the data set) without adjustment for other covariates
-# Use the 90th and 10th percentiles across rows in the data sets
+# Use the 90th and 10th percentiles across rows in the data set
 highperc_1 <- subset(groom, genetic_ancestry_male>quantile(groom$genetic_ancestry_male, 0.9)) # get all lines of data for the most anubis-like males (above the 90th percentile for male genetic ancestry)
 highperc_1$set <- "above_90"
 highperc_2 <- highperc_1 %>% group_by(male_id) %>% mutate(count_behav=dplyr::n()) # count the total number of grooming opportunities (i.e., the total number of co-resident pairings) for the most anubis-like males
@@ -83,7 +83,7 @@ ggsave("fig1B.png")
 # Fig. 1C
 ####################
 # Calculate the probability of grooming among co-resident opposite-sex pairs, per two-month interval, for the most anubis-like females (above the 90th percentile for female genetic ancestry in the data set) and the most yellow-like females (below the 10th percentile for female genetic ancestry in the data set) without adjustment for other covariates
-# Use the 90th and 10th percentiles across rows in the data sets
+# Use the 90th and 10th percentiles across rows in the data set
 highperc_1 <- subset(groom, genetic_ancestry_female>quantile(groom$genetic_ancestry_female, 0.9)) # get all lines of data for the most anubis-like females (above the 90th percentile for female genetic ancestry)
 highperc_1$set <- "above_90"
 highperc_2 <- highperc_1 %>% group_by(female_id) %>% mutate(count_behav=dplyr::n()) # count the total number of grooming opportunities (i.e., the total number of co-resident pairings) for the most anubis-like females
@@ -91,10 +91,10 @@ highperc_3 <- highperc_2 %>% group_by(female_id, count_behav) %>% mutate(yes_beh
 highperc_3$prop_behav <- highperc_3$yes_behav/highperc_3$count_behav # divide the total number of grooming occurrences by the total number of grooming opportunities to get the probability of grooming for the most anubis-like females (without adjustment for other covariates)
 highperc_3 <- highperc_3[!duplicated(highperc_3$female_id),] # only grab one row per female
 
-lowperc_1 <- subset(groom, genetic_ancestry_female<quantile(groom$genetic_ancestry_female, 0.1)) # get all lines of data for the most yellow-like females (above the 90th percentile for female genetic ancestry)
+lowperc_1 <- subset(groom, genetic_ancestry_female<quantile(groom$genetic_ancestry_female, 0.1)) # get all lines of data for the most yellow-like females (below the 10th percentile for female genetic ancestry)
 lowperc_1$set <- "below_10"
 lowperc_2 <- lowperc_1 %>% group_by(female_id) %>% mutate(count_behav=dplyr::n()) # count the total number of grooming opportunities (i.e., the total number of co-resident pairings) for the most yellow-like females
-lowperc_3 <- lowperc_2 %>% group_by(female_id, count_behav) %>% mutate(yes_behav=sum(groom_two_month)) # count the total number of grooming occurrences  (i.e., 1 for groom_two_month)for the most yellow-like females
+lowperc_3 <- lowperc_2 %>% group_by(female_id, count_behav) %>% mutate(yes_behav=sum(groom_two_month)) # count the total number of grooming occurrences (i.e., 1 for groom_two_month) for the most yellow-like females
 lowperc_3$prop_behav <- lowperc_3$yes_behav/lowperc_3$count_behav # divide the total number of grooming occurrences by the total number of grooming opportunities to get the probability of grooming for the most yellow-like females (without adjustment for other covariates)
 lowperc_3 <- lowperc_3[!duplicated(lowperc_3$female_id),] # only grab one row per female
 
@@ -139,7 +139,7 @@ ggsave("fig1D.png")
 # Fig. 2 central heatmap
 ####################
 # Get the probability of grooming behavior as a function of female genetic ancestry and male genetic ancestry, based on model estimates assuming average values for all other covariates
-# Note that we exclude female genetic ancestry, male genetic ancestry, and the assortative genetic ancestry index (and female id and male id are coded as NA below)
+# Note that we exclude female genetic ancestry, male genetic ancestry, and the assortative genetic ancestry index (and female id and male id are coded as NA)
 tmp <- data.frame(females_in_group=mean(groom$females_in_group), males_in_group=mean(groom$males_in_group), rank_female=mean(groom$rank_female), rank_male=mean(groom$rank_male),  heterozygosity_male=mean(groom$heterozygosity_male), heterozygosity_female=mean(groom$heterozygosity_female), genetic_relatedness=mean(groom$genetic_relatedness), observer_effort=mean(groom$observer_effort), female_age=mean(groom$female_age), female_age_transformed=mean(groom$female_age_transformed), reproductive_state=1, pair_coresidency=mean(groom$pair_coresidency))
 
 # Get all possible female genetic ancestry and male genetic ancestry values (these values can range continuously from 0 to 1 where where 0 corresponds to unadmixed yellow baboon ancestry and 1 corresponds to unadmixed anubis baboon ancestry)
@@ -169,29 +169,29 @@ ggplot(tmp3, aes(x=genetic_ancestry_female, y=genetic_ancestry_male, fill=probs)
 ggsave("fig2.png")
 
 ####################
-# Fig. 2 line graps surrounding heatmap
+# Fig. 2 line graphs surrounding heatmap
 ####################
 # For these plots, it is helpful for comparisons if the y-axes - which plot the grooming probabilities - have the same ranges
 min(tmp3$probs) # minimum grooming probability = 0.111543
 max(tmp3$probs) # maximum grooming probability = 0.303592
 # Set y-axes so the minimum y-value is 0.11 and the maximum y-value is 0.31
 
-# Plot the probability of grooming behavior for yellow males (genetic ancestry = 0) as a function of the genetic ancestry of potential opposite-sex social partners (left top panel)
+# Plot the probability of grooming behavior for yellow-like males (genetic ancestry = 0) as a function of the genetic ancestry of potential opposite-sex social partners (left bottom panel)
 tmp4 <- subset(tmp3, genetic_ancestry_male==0)
 ggplot(tmp4) + geom_line(aes(genetic_ancestry_female, probs), size=2) + theme_classic()+ theme(legend.position = "none", text=element_text(size=24), axis.text = element_text(color="black")) + scale_x_continuous(name="female genetic ancestry") + scale_y_continuous(limits=c(0.11, 0.31), name="grooming probability")
 ggsave("fig2_1.png")
 
-# Plot the probability of grooming behavior for anubis males (genetic ancestry = 1) as a function of the genetic ancestry of potential opposite-sex social partners (left bottom panel)
+# Plot the probability of grooming behavior for anubis-like males (genetic ancestry = 1) as a function of the genetic ancestry of potential opposite-sex social partners (left top panel)
 tmp4 <- subset(tmp3, genetic_ancestry_male==1)
 ggplot(tmp4) + geom_line(aes(genetic_ancestry_female, probs), size=2) + theme_classic()+ theme(legend.position = "none", text=element_text(size=24), axis.text = element_text(color="black")) + scale_x_continuous(name="female genetic ancestry") + scale_y_continuous(limits=c(0.11, 0.31), name="grooming probability")
 ggsave("fig2_2.png")
 
-# Plot the probability of grooming behavior for yellow females (genetic ancestry = 0) as a function of the genetic ancestry of potential opposite-sex social partners (bottom left panel)
+# Plot the probability of grooming behavior for yellow-like females (genetic ancestry = 0) as a function of the genetic ancestry of potential opposite-sex social partners (bottom left panel)
 tmp4 <- subset(tmp3, genetic_ancestry_female==0)
 ggplot(tmp4) + geom_line(aes(genetic_ancestry_male, probs), size=2) + theme_classic()+ theme(legend.position = "none", text=element_text(size=24), axis.text = element_text(color="black")) + scale_x_continuous(name="male genetic ancestry") + scale_y_continuous(limits=c(0.11, 0.31), name="grooming probability")
 ggsave("fig2_3.png")
 
-# Plot the probability of grooming behavior for anubis females (genetic ancestry = 1) as a function of the genetic ancestry of potential opposite-sex social partners (bottom right panel)
+# Plot the probability of grooming behavior for anubis-like females (genetic ancestry = 1) as a function of the genetic ancestry of potential opposite-sex social partners (bottom right panel)
 tmp4 <- subset(tmp3, genetic_ancestry_female==1)
 ggplot(tmp4) + geom_line(aes(genetic_ancestry_male, probs), size=2) + theme_classic()+ theme(legend.position = "none", text=element_text(size=24), axis.text = element_text(color="black")) + scale_x_continuous(name="male genetic ancestry") + scale_y_continuous(limits=c(0.11, 0.31), name="grooming probability")
 ggsave("fig2_4.png")
@@ -205,10 +205,10 @@ ggsave("fig2_4.png")
 # Fig. 3 central heatmap
 ####################
 # Get the probability of grooming behavior as a function of female dominance rank and male dominance rank, based on model estimates assuming average values for all other covariates
-# Note that we exclude female rank and male rank (and female id and male id are coded as NA below)
+# Note that we exclude female rank and male rank (and female id and male id are coded as NA)
 tmp <- data.frame(females_in_group=mean(groom$females_in_group), males_in_group=mean(groom$males_in_group), genetic_ancestry_female=mean(groom$genetic_ancestry_female), genetic_ancestry_male=mean(groom$genetic_ancestry_male),  heterozygosity_male=mean(groom$heterozygosity_male), heterozygosity_female=mean(groom$heterozygosity_female), genetic_relatedness=mean(groom$genetic_relatedness), observer_effort=mean(groom$observer_effort), female_age=mean(groom$female_age), female_age_transformed=mean(groom$female_age_transformed), reproductive_state=1, assortative_genetic_ancestry_index=mean(groom$assortative_genetic_ancestry_index), pair_coresidency=mean(groom$pair_coresidency))
 
-# Get all the empirical range of female dominance rank and male dominance rank values
+# Get the empirical ranges of female dominance rank and male dominance rank
 f_rank <- as.vector(seq(min(groom$rank_female),max(groom$rank_female), by=1))
 m_rank <- as.vector(seq(min(groom$rank_male),max(groom$rank_male), by=1))
 
@@ -230,7 +230,7 @@ ggplot(tmp3, aes(x=rank_female, y=rank_male, fill=probs)) + geom_raster() + them
 ggsave("fig3.png")
 
 ####################
-# Fig. 3 line graps surrounding heatmap
+# Fig. 3 line graphs surrounding heatmap
 ####################
 # For these plots, it is helpful for comparisons if the y-axes - which plot the grooming probabilities - have the same ranges
 min(tmp3$probs) # minimum grooming probability = 0.04695171
@@ -248,31 +248,31 @@ tmp4 <- subset(tmp3, min(rank_male)==rank_male)
 ggplot(tmp4) + geom_line(aes(rank_female, probs), size=2) + theme_classic()+ theme(legend.position = "none", text=element_text(size=24), axis.text = element_text(color="black")) + scale_x_continuous(name="female rank", breaks=c(1,5,10,15,20,25,30)) + scale_y_continuous(limits=c(0.04, 0.23), name="grooming probability")
 ggsave("fig3_2.png")
 
-# Plot the probability of grooming behavior for the lowest ranking females as a function of the dominance rank of potential opposite-sex social partners (bottom left panel)
+# Plot the probability of grooming behavior for the lowest ranking females as a function of the dominance rank of potential opposite-sex social partners (bottom right panel)
 tmp4 <- subset(tmp3, max(rank_female)==rank_female)
 ggplot(tmp4) + geom_line(aes(rank_male, probs), size=2) + theme_classic()+ theme(legend.position = "none", text=element_text(size=24), axis.text = element_text(color="black")) + scale_x_continuous(name="male rank", breaks=c(1,5,10,15,20)) + scale_y_continuous(limits=c(0.04, 0.23), name="grooming probability")
 ggsave("fig3_3.png")
 
-# Plot the probability of grooming behavior for the highest ranking females as a function of the dominance rank of potential opposite-sex social partners (bottom right panel)
+# Plot the probability of grooming behavior for the highest ranking females as a function of the dominance rank of potential opposite-sex social partners (bottom left panel)
 tmp4 <- subset(tmp3, min(rank_female)==rank_female)
 ggplot(tmp4) + geom_line(aes(rank_male, probs), size=2) + theme_classic()+ theme(legend.position = "none", text=element_text(size=24), axis.text = element_text(color="black")) + scale_x_continuous(name="male rank", breaks=c(1,5,10,15,20)) + scale_y_continuous(limits=c(0.04, 0.23), name="grooming probability")
 ggsave("fig3_4.png")
 
 
 #############################################################################################################################
-# Figure S1. The total effort invested in behavioral observations is consistent across study groups of different sizes.
+# Figure A1. The total effort invested in behavioral observations is consistent across study groups of different sizes.
 #############################################################################################################################
-# Plot figure S1
+# Plot figure A1
 ggplot(s1) + geom_point(alpha=0.5, size=2.5, aes(x=females_in_group, y=total_adult_female_point_samples_in_month, colour=as.factor(group_id))) + scale_x_continuous(name="adult females in social group") + scale_y_continuous(name="total adult female point samples\n per month per social group") + theme_classic() +  theme(axis.title=element_text(size=16), axis.text=element_text(size=16), legend.position = "none", text = element_text(color="black"))
-ggsave("figS1.png")
+ggsave("figA1.png")
 
 
 #############################################################################################################################
-# Figure S5. The number of adult males present in a social group influences grooming and proximity behavior.
+# Figure A5. The number of adult males present in a social group influences grooming and proximity behavior.
 #############################################################################################################################
 
 ####################
-# Fig. S5A
+# Fig. A5A
 ####################
 # Calculate the probability of grooming among co-resident opposite-sex pairs per two-month interval, for each male in social groups with greater or less than the median number of co-resident males in the sample without adjustment for other covariates
 abovemed_1 <- subset(groom, males_in_group>quantile(groom$males_in_group, 0.5)) # get all lines of data with greater than the median number of co-resident males in the sample
@@ -291,24 +291,23 @@ belowmed_3 <- belowmed_3[!duplicated(belowmed_3$male_id),] # only grab one row p
 
 tmp <- rbind(abovemed_3, belowmed_3)  # combine males living in groups with greater than and less than the median number of co-resident males in the sample into a single dataframe
 
-# Plot figure S5A
+# Plot figure A5A
 ggplot(data=tmp) + geom_jitter(aes(x = set, y = prop_behav, color=set, size=5), alpha=0.8) + geom_violin(aes(x = set, y = prop_behav, color=set, fill=set),  alpha = 0.4) + geom_boxplot(aes(x = set, y = prop_behav), size=1.25, color="black", width=0.1, fill="white", outlier.colour = NA) + scale_y_continuous(name="proportion of grooming occurrences\nout of all potential grooming opportunities")  + scale_x_discrete(labels=c("above_median"= "above median", "below_median" = "below median")) + theme_classic() + theme(legend.position = "none", legend.title = element_blank(), axis.title.x = element_blank(),text=element_text(size=30), axis.text = element_text(color="black")) + scale_color_manual(values = c("above_median" = "turquoise4", "below_median" = "turquoise4")) + scale_fill_manual(values = c("above_median" = "turquoise4", "below_median" = "turquoise4"))
-ggsave("figS5A.png")
-
+ggsave("figA5A.png")
 
 ####################
-# Fig. S5B
+# Fig. A5B
 ####################
 # Calculate the probability of grooming among co-resident opposite-sex pairs per two-month interval, for each female in social groups with greater or less than the median number of co-resident males in the sample without adjustment for other covariates
-#abovemed_1 <- subset(groom, males_in_group>quantile(groom$males_in_group, 0.5)) # get all lines of data with greater than the median number of co-resident males in the sample - already done for Figure S5A so do not need to do again
-#abovemed_1$set <- "above_median" # already done for Figure S5A so do not need to do again
+#abovemed_1 <- subset(groom, males_in_group>quantile(groom$males_in_group, 0.5)) # get all lines of data with greater than the median number of co-resident males in the sample - already done for Figure A5A so do not need to do again
+#abovemed_1$set <- "above_median" # already done for Figure A5A so do not need to do again
 abovemed_2 <- abovemed_1 %>% group_by(female_id) %>% mutate(count_behav=dplyr::n()) # count the total number of grooming opportunities (i.e., the total number of co-resident pairings) for females living in groups with greater than the median number of co-resident males in the sample
 abovemed_3 <- abovemed_2 %>% group_by(female_id, count_behav) %>% mutate(yes_behav=sum(groom_two_month)) # count the total number of grooming occurrences (i.e., 1 for groom_two_month) for females living in groups with greater than the median number of co-resident males in the sample
 abovemed_3$prop_behav <- abovemed_3$yes_behav/abovemed_3$count_behav # divide the total number of grooming occurrences by the total number of grooming opportunities to get the probability of grooming for females living in groups with greater than the median number of co-resident males in the sample (without adjustment for other covariates)
 abovemed_3 <- abovemed_3[!duplicated(abovemed_3$female_id),] # only grab one row per female
 
-#belowmed_1 <- subset(groom, males_in_group<quantile(groom$males_in_group, 0.5)) # get all lines of data with greater than the median number of co-resident males in the sample - already done for Figure S5A so do not need to do again
-#belowmed_1$set <- "below_median"  # already done for Figure S5A so do not need to do again
+#belowmed_1 <- subset(groom, males_in_group<quantile(groom$males_in_group, 0.5)) # get all lines of data with less than the median number of co-resident males in the sample - already done for Figure A5A so do not need to do again
+#belowmed_1$set <- "below_median" # already done for Figure A5A so do not need to do again
 belowmed_2 <- belowmed_1 %>% group_by(female_id) %>% mutate(count_behav=dplyr::n()) # count the total number of grooming opportunities (i.e., the total number of co-resident pairings) for females living in groups with less than the median number of co-resident males in the sample
 belowmed_3 <- belowmed_2 %>% group_by(female_id, count_behav) %>% mutate(yes_behav=sum(groom_two_month)) # count the total number of grooming occurrences (i.e., 1 for groom_two_month) for females living in groups with less than the median number of co-resident males in the sample
 belowmed_3$prop_behav <- belowmed_3$yes_behav/belowmed_3$count_behav # divide the total number of grooming occurrences by the total number of grooming opportunities to get the probability of grooming for females living in groups with less than the median number of co-resident males in the sample (without adjustment for other covariates)
@@ -316,23 +315,23 @@ belowmed_3 <- belowmed_3[!duplicated(belowmed_3$female_id),] # only grab one row
 
 tmp <- rbind(abovemed_3, belowmed_3) # combine females living in groups with greater than and less than the median number of co-resident males in the sample into a single dataframe
 
-# Plot figure S5B
+# Plot figure A5B
 ggplot(data=tmp) + geom_jitter(aes(x = set, y = prop_behav, color=set, size=5), alpha=0.8) + geom_violin(aes(x = set, y = prop_behav, color=set, fill=set),  alpha = 0.4) + geom_boxplot(aes(x = set, y = prop_behav), size=1.25, color="black", width=0.1, fill="white", outlier.colour = NA) + scale_y_continuous(name="proportion of grooming occurrences\nout of all potential grooming opportunities")  + scale_x_discrete(labels=c("above_median"= "above median", "below_median" = "below median")) + theme_classic() + theme(legend.position = "none", legend.title = element_blank(), axis.title.x = element_blank(),text=element_text(size=30), axis.text = element_text(color="black")) + scale_color_manual(values = c("above_median" = "royalblue3", "below_median" = "royalblue3")) + scale_fill_manual(values = c("above_median" = "royalblue3", "below_median" = "royalblue3"))
-ggsave("figS5B.png")
+ggsave("figA5B.png")
 
 
 #############################################################################################################################
-# Figure S6. The number of adult females present in a social group influences grooming but not proximity behavior.
+# Figure A6. The number of adult females present in a social group influences grooming but not proximity behavior.
 #############################################################################################################################
 
 ####################
-# Fig. S6A
+# Fig. A6A
 ####################
 # Calculate the probability of grooming among co-resident opposite-sex pairs per two-month interval, for each male in social groups with greater or less than the median number of co-resident females in the sample without adjustment for other covariates
 abovemed_1 <- subset(groom, females_in_group>quantile(groom$females_in_group, 0.5)) # get all lines of data with greater than the median number of co-resident females in the sample
 abovemed_1$set <- "above_median"
 abovemed_2 <- abovemed_1 %>% group_by(male_id) %>% mutate(count_behav=dplyr::n()) # count the total number of grooming opportunities (i.e., the total number of co-resident pairings) for males living in groups with greater than the median number of co-resident females in the sample
-abovemed_3 <- abovemed_2 %>% group_by(male_id, count_behav) %>% mutate(yes_behav=sum(groom_two_month))  # count the total number of grooming occurrences (i.e., 1 for groom_two_month) for males living in groups with greater than the median number of co-resident females in the sample
+abovemed_3 <- abovemed_2 %>% group_by(male_id, count_behav) %>% mutate(yes_behav=sum(groom_two_month)) # count the total number of grooming occurrences (i.e., 1 for groom_two_month) for males living in groups with greater than the median number of co-resident females in the sample
 abovemed_3$prop_behav <- abovemed_3$yes_behav/abovemed_3$count_behav # divide the total number of grooming occurrences by the total number of grooming opportunities to get the probability of grooming for males living in groups with greater than the median number of co-resident females in the sample (without adjustment for other covariates)
 abovemed_3 <- abovemed_3[!duplicated(abovemed_3$male_id),] # only grab one row per male
 
@@ -341,35 +340,34 @@ belowmed_1$set <- "below_median"
 belowmed_2 <- belowmed_1 %>% group_by(male_id) %>% mutate(count_behav=dplyr::n()) # count the total number of grooming opportunities (i.e., the total number of co-resident pairings) for males living in groups with less than the median number of co-resident females in the sample
 belowmed_3 <- belowmed_2 %>% group_by(male_id, count_behav) %>% mutate(yes_behav=sum(groom_two_month)) # count the total number of grooming occurrences (i.e., 1 for groom_two_month) for males living in groups with less than the median number of co-resident females in the sample
 belowmed_3$prop_behav <- belowmed_3$yes_behav/belowmed_3$count_behav # divide the total number of grooming occurrences by the total number of grooming opportunities to get the probability of grooming for males living in groups with less than the median number of co-resident females in the sample (without adjustment for other covariates)
-belowmed_3 <- belowmed_3[!duplicated(belowmed_3$male_id),]  # only grab one row per male
+belowmed_3 <- belowmed_3[!duplicated(belowmed_3$male_id),] # only grab one row per male
 
 tmp <- rbind(abovemed_3, belowmed_3) # combine males living in groups with greater than and less than the median number of co-resident females in the sample into a single dataframe
 
-# Plot figure S6A
+# Plot figure A6A
 ggplot(data=tmp) + geom_jitter(aes(x = set, y = prop_behav, color=set, size=5), alpha=0.8) + geom_violin(aes(x = set, y = prop_behav, color=set, fill=set),  alpha = 0.4) + geom_boxplot(aes(x = set, y = prop_behav), size=1.25, color="black", width=0.1, fill="white", outlier.colour = NA) + scale_y_continuous(name="proportion of grooming occurrences\nout of all potential grooming opportunities")  + scale_x_discrete(labels=c("above_median"= "above median", "below_median" = "below median")) + theme_classic() + theme(legend.position = "none", legend.title = element_blank(), axis.title.x = element_blank(),text=element_text(size=30), axis.text = element_text(color="black")) + scale_color_manual(values = c("above_median" = "turquoise4", "below_median" = "turquoise4")) + scale_fill_manual(values = c("above_median" = "turquoise4", "below_median" = "turquoise4"))
-ggsave("figS6A.png")
-
+ggsave("figA6A.png")
 
 ####################
-# Fig. S6B
+# Fig. A6B
 ####################
 # Calculate the probability of grooming among co-resident opposite-sex pairs per two-month interval, for each female in social groups with greater or less than the median number of co-resident females in the sample without adjustment for other covariates
-#abovemed_1 <- subset(groom, females_in_group>quantile(groom$females_in_group, 0.5)) # get all lines of data with greater than the median number of co-resident females in the sample - already done for Figure S6A so do not need to do again
-#abovemed_1$set <- "above_median" # already done for Figure S6A so do not need to do again
+#abovemed_1 <- subset(groom, females_in_group>quantile(groom$females_in_group, 0.5)) # get all lines of data with greater than the median number of co-resident females in the sample - already done for Figure A6A so do not need to do again
+#abovemed_1$set <- "above_median" # already done for Figure A6A so do not need to do again
 abovemed_2 <- abovemed_1 %>% group_by(female_id) %>% mutate(count_behav=dplyr::n()) # count the total number of grooming opportunities (i.e., the total number of co-resident pairings) for females living in groups with greater than the median number of co-resident females in the sample
 abovemed_3 <- abovemed_2 %>% group_by(female_id, count_behav) %>% mutate(yes_behav=sum(groom_two_month)) # count the total number of grooming occurrences (i.e., 1 for groom_two_month) for females living in groups with greater than the median number of co-resident females in the sample
 abovemed_3$prop_behav <- abovemed_3$yes_behav/abovemed_3$count_behav # divide the total number of grooming occurrences by the total number of grooming opportunities to get the probability of grooming for females living in groups with greater than the median number of co-resident females in the sample (without adjustment for other covariates)
 abovemed_3 <- abovemed_3[!duplicated(abovemed_3$female_id),] # only grab one row per female
 
-#belowmed_1 <- subset(groom, females_in_group<quantile(groom$females_in_group, 0.5)) # get all lines of data with greater than the median number of co-resident females in the sample - already done for Figure S6A so do not need to do again
-#belowmed_1$set <- "below_median" # already done for Figure S6A so do not need to do again
+#belowmed_1 <- subset(groom, females_in_group<quantile(groom$females_in_group, 0.5)) # get all lines of data with less than the median number of co-resident females in the sample - already done for Figure A6A so do not need to do again
+#belowmed_1$set <- "below_median" # already done for Figure A6A so do not need to do again
 belowmed_2 <- belowmed_1 %>% group_by(female_id) %>% mutate(count_behav=dplyr::n()) # count the total number of grooming opportunities (i.e., the total number of co-resident pairings) for females living in groups with less than the median number of co-resident females in the sample
-belowmed_3 <- belowmed_2 %>% group_by(female_id, count_behav) %>% mutate(yes_behav=sum(groom_two_month))  # count the total number of grooming occurrences (i.e., 1 for groom_two_month) for females living in groups with less than the median number of co-resident females in the sample
-belowmed_3$prop_behav <- belowmed_3$yes_behav/belowmed_3$count_behav #  divide the total number of grooming occurrences by the total number of grooming opportunities to get the probability of grooming for females living in groups with less than the median number of co-resident females in the sample (without adjustment for other covariates)
+belowmed_3 <- belowmed_2 %>% group_by(female_id, count_behav) %>% mutate(yes_behav=sum(groom_two_month)) # count the total number of grooming occurrences (i.e., 1 for groom_two_month) for females living in groups with less than the median number of co-resident females in the sample
+belowmed_3$prop_behav <- belowmed_3$yes_behav/belowmed_3$count_behav # divide the total number of grooming occurrences by the total number of grooming opportunities to get the probability of grooming for females living in groups with less than the median number of co-resident females in the sample (without adjustment for other covariates)
 belowmed_3 <- belowmed_3[!duplicated(belowmed_3$female_id),] # only grab one row per female
 
-tmp <- rbind(abovemed_3, belowmed_3)# combine females living in groups with greater than and less than the median number of co-resident females in the sample into a single dataframe
+tmp <- rbind(abovemed_3, belowmed_3) # combine females living in groups with greater than and less than the median number of co-resident females in the sample into a single dataframe
 
-# Plot figure S6B
+# Plot figure A6B
 ggplot(data=tmp) + geom_jitter(aes(x = set, y = prop_behav, color=set, size=5), alpha=0.8) + geom_violin(aes(x = set, y = prop_behav, color=set, fill=set),  alpha = 0.4) + geom_boxplot(aes(x = set, y = prop_behav), size=1.25, color="black", width=0.1, fill="white", outlier.colour = NA) + scale_y_continuous(name="proportion of grooming occurrences\nout of all potential grooming opportunities")  + scale_x_discrete(labels=c("above_median"= "above median", "below_median" = "below median")) + theme_classic() + theme(legend.position = "none", legend.title = element_blank(), axis.title.x = element_blank(),text=element_text(size=30), axis.text = element_text(color="black")) + scale_color_manual(values = c("above_median" = "royalblue3", "below_median" = "royalblue3")) + scale_fill_manual(values = c("above_median" = "royalblue3", "below_median" = "royalblue3"))
-ggsave("figS6B.png")
+ggsave("figA6B.png")
