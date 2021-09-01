@@ -5,9 +5,9 @@ In R, run `1prepare_for_permutations.R` which computes, for each female-two-mont
 
 In a directory on a computing cluster containing both R data files, run the scripts 2agroom_perm.R and 2bprox_perm.R as arrays (see below) which will:
 
-+(a) randomly permute the grooming/proximity probabilities computed in 1prepare_for_permutations.R across all female two-month intervals, 
-+(b) randomly assign 0/1 by drawing from a binomial distribution with probability equal to the permuted grooming/proximity probability for each female two-month interval, and
-+(c) fit the same grooming/proximity model used to analyze the real data but using the new, permutation-based outcome variable.
+a. randomly permute the grooming/proximity probabilities computed in 1prepare_for_permutations.R across all female two-month intervals, 
+b. randomly assign 0/1 by drawing from a binomial distribution with probability equal to the permuted grooming/proximity probability for each female two-month interval, and
+c. fit the same grooming/proximity model used to analyze the real data but using the new, permutation-based outcome variable.
 
 Run 50 jobs per array (since each job is currently set to run 20 permutations which can be changed by setting nperm to a value other than 20 in groom_perm.R and prox_perm.R) because we want to run 1,000 permutations per model in total (50 jobs * 20 permutations/job = 1,000 permutations total)
 module load R before running script since the `groom_perm.R` and `prox_perm.R` scripts are set up to load our current environment:
