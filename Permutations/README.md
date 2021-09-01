@@ -15,7 +15,7 @@ sbatch --mem=100 --cpus-per-task=20 --array=1-50%5 2agroom_perm.R
 sbatch --mem=100 --cpus-per-task=20 --array=1-50%5 2bprox_perm.R
 ```
 
-Concatenate the output of the 50 jobs per array (20 permutations per job) into a single file for each model:
+Concatenate the output of the 50 jobs per array (20 permutations per job) into a single file for each model.
 ```console
 cat groom_permuted_results_*.txt >> all.groom_permuted_results.txt
 cat prox_permuted_results_*.txt >> all.prox_permuted_results.txt
